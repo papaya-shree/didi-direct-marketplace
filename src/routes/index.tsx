@@ -50,7 +50,7 @@ function Index() {
             {tabs.map(({ id, label, icon: Icon }) => (
               <button key={id} onClick={() => setTab(id)} className={`flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-semibold ${tab === id ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"}`}>
                 <Icon className="h-4 w-4" />{label}
-                {id === "leader" && pending > 0 && <span className="rounded-full bg-terracotta px-1.5 text-xs text-foreground-foreground">{pending}</span>}
+                {id === "leader" && pending > 0 && <span className="rounded-full bg-terracotta px-1.5 text-xs text-primary-foreground">{pending}</span>}
               </button>
             ))}
           </nav>
