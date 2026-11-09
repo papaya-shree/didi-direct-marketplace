@@ -22,33 +22,17 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
     setStage("done");
   };
 
+  const [elapsed, setElapsed] = useState(0);
+  void stopRef; void setError;
+
   const record = async () => {
-    if (stage === "recording") { stopRef.current?.(); return; }
-    setError(null); setDraft(null);
-    let stream: MediaStream;
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    } catch {
-      setError("Mic ki permission nahi mili. Browser mein mic allow karein.");
-      return;
-    }
-    setStage("recording");
-    let text = "";
-    const w = window as unknown as { SpeechRecognition?: new () => any; webkitSpeechRecognition?: new () => any };
-    const SR = w.SpeechRecognition ?? w.webkitSpeechRecognition;
-    const rec = SR ? new SR() : null;
-    const done = () => { stream.getTracks().forEach((t) => t.stop()); stopRef.current = null; void finish(text); };
-    if (rec) {
-      rec.lang = "hi-IN"; rec.continuous = true; rec.interimResults = false;
-      rec.onresult = (e: any) => { text = Array.from(e.results as ArrayLike<any>).map((r: any) => r[0].transcript).join(" "); };
-      rec.onend = done;
-      rec.onerror = () => {};
-      rec.start();
-      stopRef.current = () => rec.stop();
-    } else {
-      const t = setTimeout(done, 5000);
-      stopRef.current = () => { clearTimeout(t); done(); };
-    }
+    if (stage === "recording" || stage === "processing") return;
+    setDraft(null); setElapsed(0); setStage("recording");
+    const start = Date.now();
+    const iv = setInterval(() => setElapsed(Math.min(3, (Date.now() - start) / 1000)), 100);
+    await new Promise((r) => setTimeout(r, 3000));
+    clearInterval(iv); setElapsed(3);
+    await finish("");
   };
 
   const submit = () => {
