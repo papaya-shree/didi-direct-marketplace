@@ -23,7 +23,7 @@ export function BuyerStorefront({ products, onSold }: { products: Product[]; onS
 
   return (
     <div>
-      <div className="mb-6"><h2 className="font-display text-3xl text-primary">Handmade, direct from the maker.</h2><p className="text-muted-foreground">Every purchase pays a woman artisan in India within minutes.</p></div>
+      <div className="mb-6"><h2 className="font-display text-3xl text-foreground">Handmade, direct from the maker.</h2><p className="text-muted-foreground">Every purchase pays a woman artisan in India within minutes.</p></div>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {visible.map((p) => {
           const col = collectives.find((c) => c.id === p.collectiveId);
@@ -32,10 +32,10 @@ export function BuyerStorefront({ products, onSold }: { products: Product[]; onS
               <div className="relative"><img src={p.image} alt={p.title} className="aspect-[4/3] w-full object-cover" />{p.status === "Sold" && <span className="absolute left-3 top-3 rounded-full bg-primary px-2 py-0.5 text-xs font-semibold text-primary-foreground">Sold</span>}</div>
               <div className="flex flex-1 flex-col p-4">
                 <p className="text-xs uppercase tracking-wider text-terracotta">{p.craft}</p>
-                <p className="font-semibold text-primary">{p.title}</p>
+                <p className="font-semibold text-foreground">{p.title}</p>
                 <p className="mt-1 flex-1 text-sm text-muted-foreground">{p.description}</p>
                 <p className="mt-2 text-xs text-muted-foreground">By {p.maker} · {col?.name}</p>
-                <p className="mt-3 font-display text-2xl text-primary">${price(p).toFixed(2)}</p>
+                <p className="mt-3 font-display text-2xl text-foreground">${price(p).toFixed(2)}</p>
                 <button disabled={p.status === "Sold" || paying === p.id} onClick={() => checkout(p)} aria-label="Pay with PayPal" className="mt-3 flex items-center justify-center gap-2 rounded-full bg-paypal py-2.5 text-sm font-bold text-paypal-foreground disabled:opacity-40">
                   {paying === p.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <><span className="italic">Pay</span><span className="-ml-2 italic text-paypal-accent">Pal</span> Checkout</>}
                 </button>
@@ -57,9 +57,9 @@ function InvoiceModal({ p, onClose }: { p: Product; onClose: () => void }) {
   const [res, setRes] = useState<{ id: string; total: { value: string } } | null>(null); const [busy, setBusy] = useState(false);
   const send = async () => { setBusy(true); setRes(await post("/api/paypal/create-invoice", { email, productId: p.id, quantity: qty, notes, unit: price(p) })); setBusy(false); };
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/40 p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4" onClick={onClose}>
       <div className="w-full max-w-md rounded-xl border border-slate-200 bg-card p-6" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-start justify-between"><div><p className="font-semibold text-primary">Custom invoice</p><p className="text-sm text-muted-foreground">{p.title}</p></div><button onClick={onClose} aria-label="Close"><X className="h-5 w-5" /></button></div>
+        <div className="flex items-start justify-between"><div><p className="font-semibold text-foreground">Custom invoice</p><p className="text-sm text-muted-foreground">{p.title}</p></div><button onClick={onClose} aria-label="Close"><X className="h-5 w-5" /></button></div>
         {res ? (
           <div className="mt-6 text-center"><CheckCircle2 className="mx-auto h-10 w-10 text-success" /><p className="mt-2 font-semibold">Invoice {res.id} sent</p><p className="text-sm text-muted-foreground">Total ${res.total.value} via PayPal Invoicing</p></div>
         ) : (
@@ -95,7 +95,7 @@ function Assistant({ products }: { products: Product[] }) {
       <button onClick={() => setOpen(!open)} aria-label="Assistant" className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-terracotta text-primary-foreground">{open ? <X /> : <MessageCircle />}</button>
       {open && (
         <div className="fixed bottom-24 right-6 z-40 flex h-96 w-80 flex-col rounded-xl border border-slate-200 bg-card">
-          <p className="border-b border-slate-200 p-3 text-sm font-semibold text-primary">Didi Assistant</p>
+          <p className="border-b border-slate-200 p-3 text-sm font-semibold text-foreground">Didi Assistant</p>
           <div className="flex-1 space-y-2 overflow-y-auto p-3">{msgs.map((m, i) => <p key={i} className={`max-w-[85%] rounded-lg px-3 py-2 text-sm ${m.me ? "ml-auto bg-primary text-primary-foreground" : "bg-muted"}`}>{m.t}</p>)}</div>
           <div className="flex gap-2 border-t border-slate-200 p-2"><input value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => e.key === "Enter" && ask()} placeholder="Ask about the throw…" className="flex-1 rounded-md border border-slate-200 px-2 text-sm" /><button onClick={ask} aria-label="Send" className="rounded-md bg-primary p-2 text-primary-foreground"><Send className="h-4 w-4" /></button></div>
         </div>

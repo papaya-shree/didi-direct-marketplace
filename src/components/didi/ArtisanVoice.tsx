@@ -91,7 +91,7 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
     <div className="mx-auto flex max-w-sm flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-muted" style={{ minHeight: 640 }}>
       <div className="flex-1 p-6">
         <p className="text-xs uppercase tracking-widest text-muted-foreground">नमस्ते, कमला दीदी</p>
-        <h2 className="mt-1 font-display text-3xl text-primary">नया सामान बेचें</h2>
+        <h2 className="mt-1 font-display text-3xl text-foreground">नया सामान बेचें</h2>
         <p className="mt-1 text-sm text-muted-foreground">Photo khichein, phir bolkar batayein.</p>
         {photo && <img src={photo} alt="Uploaded craft" className="mt-6 aspect-square w-full rounded-xl border border-slate-200 object-cover" />}
       </div>
@@ -101,7 +101,7 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
         {sent ? (
           <div className="py-6 text-center">
             <CheckCircle2 className="mx-auto h-12 w-12 text-success" />
-            <p className="mt-3 font-semibold text-primary">Leader ke paas bhej diya!</p>
+            <p className="mt-3 font-semibold text-foreground">Leader ke paas bhej diya!</p>
             <p className="text-sm text-muted-foreground">Sent for review.</p>
             <button onClick={reset} className="mt-4 text-sm font-semibold text-terracotta">Aur banayein</button>
           </div>
@@ -109,7 +109,7 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
           <div className="space-y-3">
             <p className="rounded-lg bg-muted p-3 text-sm italic">“{draft.transcript}”</p>
             <div className="rounded-lg border border-slate-200 p-3 text-sm">
-              <p className="font-semibold text-primary">{draft.title}</p>
+              <p className="font-semibold text-foreground">{draft.title}</p>
               <p className="text-muted-foreground">{draft.description}</p>
               <p className="mt-2 text-xs text-muted-foreground">₹{draft.materials} materials · {draft.hours} hrs · {draft.craft}</p>
             </div>
@@ -123,7 +123,7 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
                 <span key={i} className={`w-1.5 rounded-full bg-terracotta transition-all ${stage === "recording" ? "animate-wave" : "opacity-30"}`} style={{ height: `${Math.min(100, (20 + ((i * 37) % 60)) * (0.5 + level * 1.5))}%`, animationDelay: `${(i % 8) * 0.09}s` }} />
               ))}
             </div>
-            <p className="mt-3 font-mono text-2xl text-primary">0:{String(Math.floor(elapsed)).padStart(2, "0")}.{Math.floor((elapsed % 1) * 10)}</p>
+            <p className="mt-3 font-mono text-2xl text-foreground">0:{String(Math.floor(elapsed)).padStart(2, "0")}.{Math.floor((elapsed % 1) * 10)}</p>
             <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
               {stage === "processing" ? <><Loader2 className="h-4 w-4 animate-spin" />Hindi samajh rahe hain…</> : <><span className="h-2 w-2 animate-pulse rounded-full bg-destructive" />Sun rahe hain…</>}
             </p>
@@ -133,7 +133,7 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3">
-            <label className="flex cursor-pointer flex-col items-center gap-2 rounded-2xl border border-slate-200 py-6 text-primary">
+            <label className="flex cursor-pointer flex-col items-center gap-2 rounded-2xl border border-slate-200 py-6 text-foreground">
               <Camera className="h-7 w-7" />
               <span className="text-sm font-semibold">{photo ? "Badlein" : "Photo"}</span>
               <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) setPhoto(URL.createObjectURL(f)); }} />
