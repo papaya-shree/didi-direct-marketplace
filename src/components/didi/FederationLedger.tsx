@@ -35,7 +35,7 @@ export function FederationLedger({ rows, setRows }: { rows: Settlement[]; setRow
       <div className="overflow-x-auto rounded-xl border border-slate-200 bg-card">
         <table className="w-full text-sm">
           <thead className="border-b border-slate-200 text-left text-xs uppercase tracking-wider text-muted-foreground"><tr>{["Item", "USD Received", "INR Withdrawn", "Maker", "Share", "Status"].map((h) => <th key={h} className="px-4 py-3 font-semibold">{h}</th>)}</tr></thead>
-          <tbody>{rows.map((r) => (
+          <tbody>{rows.length === 0 && <tr><td colSpan={6} className="px-4 py-10 text-center text-muted-foreground">No payments yet. Sales from the storefront will appear here.</td></tr>}{rows.map((r) => (
             <tr key={r.id} className="border-b border-slate-200 last:border-0">
               <td className="px-4 py-3 font-medium text-foreground">{r.item}</td><td className="px-4 py-3">${r.usd.toFixed(2)}</td><td className="px-4 py-3">₹{r.inr.toLocaleString("en-IN")}</td><td className="px-4 py-3">{r.maker}</td><td className="px-4 py-3">{Math.round(r.share * 100)}%</td>
               <td className="px-4 py-3"><span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${r.status === "Settled" ? "bg-success text-success-foreground" : "bg-muted text-terracotta"}`}>{r.status}</span>{r.hash && <span className="ml-2 font-mono text-xs text-muted-foreground">{r.hash}</span>}</td>

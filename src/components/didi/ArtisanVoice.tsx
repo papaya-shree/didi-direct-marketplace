@@ -3,10 +3,7 @@ import { Camera, Mic, Loader2, CheckCircle2, Send, AudioLines, Sparkles, ShieldC
 import type { Product } from "@/lib/data";
 
 type Memo = { title: string; transcript: string; at: string; secs: number };
-const sampleMemos: Memo[] = [
-  { title: "Mirror-work Tote Bag", transcript: "ये शीशे की कढ़ाई वाला थैला है, आठ घंटे लगे…", at: "Kal, 4:10 pm", secs: 12 },
-  { title: "Hand-block Printed Dupatta", transcript: "दाबू प्रिंट का दुपट्टा, बारह घंटे लगे…", at: "Somvar, 11:30 am", secs: 9 },
-];
+const sampleMemos: Memo[] = [];
 
 type Draft = { title: string; titleHi: string; description: string; craft: string; materials: number; hours: number; transcript: string };
 
@@ -175,6 +172,7 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
     </div>
     <aside className="hidden rounded-xl border border-slate-200 bg-card p-6 lg:block">
       <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Recent Voice Memos</p>
+      {memos.length === 0 && <p className="mt-4 text-sm text-muted-foreground">Abhi koi memo nahi. "Bolo" dabakar shuru karein.</p>}
       <ul className="mt-4 divide-y divide-slate-200">
         {memos.map((m, i) => (
           <li key={i} className="py-3 first:pt-0">
