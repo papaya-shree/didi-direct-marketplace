@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { Mic, ClipboardCheck, Store, Landmark } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Mic, ClipboardCheck, Store, Landmark, RotateCcw } from "lucide-react";
+
+const STORE_KEY = "didi-direct-state-v1";
 import { initialProducts, initialSettlements, type Product, type Settlement } from "@/lib/data";
 import { makerShareINR } from "@/lib/pricing";
 import { ArtisanVoice } from "@/components/didi/ArtisanVoice";
@@ -33,6 +35,27 @@ function Index() {
   const [tab, setTab] = useState<(typeof tabs)[number]["id"]>("artisan");
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [settlements, setSettlements] = useState<Settlement[]>(initialSettlements);
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORE_KEY);
+      if (raw) {
+        const d = JSON.parse(raw);
+        if (Array.isArray(d.products)) setProducts(d.products);
+        if (Array.isArray(d.settlements)) setSettlements(d.settlements);
+      }
+    } catch { /* ignore corrupt data */ }
+    setLoaded(true);
+  }, []);
+  useEffect(() => {
+    if (loaded) localStorage.setItem(STORE_KEY, JSON.stringify({ products, settlements }));
+  }, [loaded, products, settlements]);
+  const resetDemo = () => {
+    if (!confirm("Reset all demo data?")) return;
+    localStorage.removeItem(STORE_KEY);
+    setProducts(initialProducts);
+    setSettlements(initialSettlements);
+  };
   const pending = products.filter((p) => p.status === "Pending_Review").length;
 
   const update = (p: Product) => setProducts((ps) => ps.map((x) => (x.id === p.id ? p : x)));
@@ -62,6 +85,11 @@ function Index() {
         {tab === "buyer" && <BuyerStorefront products={products} onSold={onSold} />}
         {tab === "ledger" && <FederationLedger rows={settlements} setRows={setSettlements} />}
       </main>
+      <footer className="mx-auto flex max-w-6xl justify-end px-4 pb-8">
+        <button onClick={resetDemo} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
+          <RotateCcw className="h-3 w-3" />Reset Demo Data
+        </button>
+      </footer>
     </div>
   );
 }
