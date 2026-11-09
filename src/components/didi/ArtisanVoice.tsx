@@ -91,9 +91,9 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
               <span className="text-sm font-semibold">{photo ? "Badlein" : "Photo"}</span>
               <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) setPhoto(URL.createObjectURL(f)); }} />
             </label>
-            <button onClick={record} disabled={stage === "processing"} className="flex flex-col items-center gap-2 rounded-2xl bg-terracotta py-6 text-primary-foreground disabled:opacity-80">
-              {stage === "processing" ? <Loader2 className="h-7 w-7 animate-spin" /> : <Mic className={`h-7 w-7 ${stage === "recording" ? "animate-pulse" : ""}`} />}
-              <span className="text-sm font-semibold">{stage === "recording" ? "Rokne ke liye dabayein" : stage === "processing" ? "Samajh rahe…" : "Bolo"}</span>
+            <button onClick={record} className="flex flex-col items-center gap-2 rounded-2xl bg-terracotta py-6 text-primary-foreground">
+              <Mic className="h-7 w-7" />
+              <span className="text-sm font-semibold">Bolo</span>
             </button>
             {error && <p className="col-span-2 text-center text-sm text-destructive">{error}</p>}
           </div>
