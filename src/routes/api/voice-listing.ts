@@ -11,7 +11,7 @@ export const Route = createFileRoute("/api/voice-listing")({
       POST: async ({ request }) => {
         const body = (await request.json().catch(() => ({}))) as { seed?: number };
         await new Promise((r) => setTimeout(r, 900));
-        const d = drafts[(body.seed ?? 0) % drafts.length];
+        const d = drafts[(body.seed ?? 0) % drafts.length]!;
         return Response.json({ ok: true, stt: { lang: "hi-IN", confidence: 0.94 }, vision: { labels: [d.craft, "handmade"] }, draft: d });
       },
     },

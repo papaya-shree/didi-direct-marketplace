@@ -14,7 +14,7 @@ export function FederationLedger({ rows, setRows }: { rows: Settlement[]; setRow
     setBusy(true);
     const res = await fetch("/api/ledger/settle", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ids: pending.map((r) => r.id) }) }).then((r) => r.json());
     const map = new Map<string, string>(res.settled.map((s: { id: string; hash: string }) => [s.id, s.hash]));
-    setRows(rows.map((r) => (map.has(r.id) ? { ...r, status: "Settled", hash: map.get(r.id) } : r)));
+    setRows(rows.map((r) => (map.has(r.id) ? { ...r, status: "Settled", hash: map.get(r.id) ?? "" } : r)));
     setLog((l) => [...res.settled.map((s: { id: string; hash: string; at: string }) => `${s.at.slice(11, 19)}  ${s.hash}  → UPI credited`), ...(res.settled.length ? [] : [`${new Date().toISOString().slice(11, 19)}  nothing pending`]), ...l]);
     setBusy(false);
   };
