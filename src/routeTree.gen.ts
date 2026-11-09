@@ -10,33 +10,89 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiVoiceListingRouteImport } from './routes/api/voice-listing'
+import { Route as ApiLedgerSettleRouteImport } from './routes/api/ledger/settle'
+import { Route as ApiPaypalCreateInvoiceRouteImport } from './routes/api/paypal/create-invoice'
+import { Route as ApiPaypalCreateOrderRouteImport } from './routes/api/paypal/create-order'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiVoiceListingRoute = ApiVoiceListingRouteImport.update({
+  id: '/api/voice-listing',
+  path: '/api/voice-listing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiLedgerSettleRoute = ApiLedgerSettleRouteImport.update({
+  id: '/api/ledger/settle',
+  path: '/api/ledger/settle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPaypalCreateInvoiceRoute = ApiPaypalCreateInvoiceRouteImport.update({
+  id: '/api/paypal/create-invoice',
+  path: '/api/paypal/create-invoice',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPaypalCreateOrderRoute = ApiPaypalCreateOrderRouteImport.update({
+  id: '/api/paypal/create-order',
+  path: '/api/paypal/create-order',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api/voice-listing': typeof ApiVoiceListingRoute
+  '/api/ledger/settle': typeof ApiLedgerSettleRoute
+  '/api/paypal/create-invoice': typeof ApiPaypalCreateInvoiceRoute
+  '/api/paypal/create-order': typeof ApiPaypalCreateOrderRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/voice-listing': typeof ApiVoiceListingRoute
+  '/api/ledger/settle': typeof ApiLedgerSettleRoute
+  '/api/paypal/create-invoice': typeof ApiPaypalCreateInvoiceRoute
+  '/api/paypal/create-order': typeof ApiPaypalCreateOrderRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api/voice-listing': typeof ApiVoiceListingRoute
+  '/api/ledger/settle': typeof ApiLedgerSettleRoute
+  '/api/paypal/create-invoice': typeof ApiPaypalCreateInvoiceRoute
+  '/api/paypal/create-order': typeof ApiPaypalCreateOrderRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/api/voice-listing'
+    | '/api/ledger/settle'
+    | '/api/paypal/create-invoice'
+    | '/api/paypal/create-order'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/api/voice-listing'
+    | '/api/ledger/settle'
+    | '/api/paypal/create-invoice'
+    | '/api/paypal/create-order'
+  id:
+    | '__root__'
+    | '/'
+    | '/api/voice-listing'
+    | '/api/ledger/settle'
+    | '/api/paypal/create-invoice'
+    | '/api/paypal/create-order'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiVoiceListingRoute: typeof ApiVoiceListingRoute
+  ApiLedgerSettleRoute: typeof ApiLedgerSettleRoute
+  ApiPaypalCreateInvoiceRoute: typeof ApiPaypalCreateInvoiceRoute
+  ApiPaypalCreateOrderRoute: typeof ApiPaypalCreateOrderRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +104,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/voice-listing': {
+      id: '/api/voice-listing'
+      path: '/api/voice-listing'
+      fullPath: '/api/voice-listing'
+      preLoaderRoute: typeof ApiVoiceListingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/ledger/settle': {
+      id: '/api/ledger/settle'
+      path: '/api/ledger/settle'
+      fullPath: '/api/ledger/settle'
+      preLoaderRoute: typeof ApiLedgerSettleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/paypal/create-invoice': {
+      id: '/api/paypal/create-invoice'
+      path: '/api/paypal/create-invoice'
+      fullPath: '/api/paypal/create-invoice'
+      preLoaderRoute: typeof ApiPaypalCreateInvoiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/paypal/create-order': {
+      id: '/api/paypal/create-order'
+      path: '/api/paypal/create-order'
+      fullPath: '/api/paypal/create-order'
+      preLoaderRoute: typeof ApiPaypalCreateOrderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiVoiceListingRoute: ApiVoiceListingRoute,
+  ApiLedgerSettleRoute: ApiLedgerSettleRoute,
+  ApiPaypalCreateInvoiceRoute: ApiPaypalCreateInvoiceRoute,
+  ApiPaypalCreateOrderRoute: ApiPaypalCreateOrderRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
