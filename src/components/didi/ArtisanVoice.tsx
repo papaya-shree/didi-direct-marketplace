@@ -11,14 +11,44 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
   const [sent, setSent] = useState(false);
   const seed = useRef(0);
 
-  const record = async () => {
-    setStage("recording");
-    await new Promise((r) => setTimeout(r, 1600));
+  const [error, setError] = useState<string | null>(null);
+  const stopRef = useRef<(() => void) | null>(null);
+
+  const finish = async (spoken: string) => {
     setStage("processing");
     const res = await fetch("/api/voice-listing", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ seed: seed.current++ }) });
     const json = await res.json();
-    setDraft(json.draft);
+    setDraft({ ...json.draft, transcript: spoken || json.draft.transcript });
     setStage("done");
+  };
+
+  const record = async () => {
+    if (stage === "recording") { stopRef.current?.(); return; }
+    setError(null); setDraft(null);
+    let stream: MediaStream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch {
+      setError("Mic ki permission nahi mili. Browser mein mic allow karein.");
+      return;
+    }
+    setStage("recording");
+    let text = "";
+    const w = window as unknown as { SpeechRecognition?: new () => any; webkitSpeechRecognition?: new () => any };
+    const SR = w.SpeechRecognition ?? w.webkitSpeechRecognition;
+    const rec = SR ? new SR() : null;
+    const done = () => { stream.getTracks().forEach((t) => t.stop()); stopRef.current = null; void finish(text); };
+    if (rec) {
+      rec.lang = "hi-IN"; rec.continuous = true; rec.interimResults = false;
+      rec.onresult = (e: any) => { text = Array.from(e.results as ArrayLike<any>).map((r: any) => r[0].transcript).join(" "); };
+      rec.onend = done;
+      rec.onerror = () => {};
+      rec.start();
+      stopRef.current = () => rec.stop();
+    } else {
+      const t = setTimeout(done, 5000);
+      stopRef.current = () => { clearTimeout(t); done(); };
+    }
   };
 
   const submit = () => {
@@ -55,6 +85,7 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
               <p className="text-muted-foreground">{draft.description}</p>
               <p className="mt-2 text-xs text-muted-foreground">₹{draft.materials} materials · {draft.hours} hrs · {draft.craft}</p>
             </div>
+            <button onClick={record} className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 py-3 font-semibold text-terracotta"><Mic className="h-4 w-4" /> Dobara bolein</button>
             <button onClick={submit} className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 font-semibold text-primary-foreground"><Send className="h-4 w-4" /> Bhejein (Submit)</button>
           </div>
         ) : (
@@ -64,10 +95,11 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
               <span className="text-sm font-semibold">{photo ? "Badlein" : "Photo"}</span>
               <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) setPhoto(URL.createObjectURL(f)); }} />
             </label>
-            <button onClick={record} disabled={stage !== "idle"} className="flex flex-col items-center gap-2 rounded-2xl bg-terracotta py-6 text-primary-foreground disabled:opacity-80">
+            <button onClick={record} disabled={stage === "processing"} className="flex flex-col items-center gap-2 rounded-2xl bg-terracotta py-6 text-primary-foreground disabled:opacity-80">
               {stage === "processing" ? <Loader2 className="h-7 w-7 animate-spin" /> : <Mic className={`h-7 w-7 ${stage === "recording" ? "animate-pulse" : ""}`} />}
-              <span className="text-sm font-semibold">{stage === "recording" ? "Sun rahe hain…" : stage === "processing" ? "Samajh rahe…" : "Bolo"}</span>
+              <span className="text-sm font-semibold">{stage === "recording" ? "Rokne ke liye dabayein" : stage === "processing" ? "Samajh rahe…" : "Bolo"}</span>
             </button>
+            {error && <p className="col-span-2 text-center text-sm text-destructive">{error}</p>}
           </div>
         )}
       </div>
