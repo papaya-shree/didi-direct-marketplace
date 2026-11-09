@@ -45,10 +45,10 @@ function Index() {
     <div className="min-h-screen bg-background font-sans text-foreground">
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-card">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3 md:flex-row md:items-center md:justify-between">
-          <p className="font-display text-xl text-primary">Didi<span className="text-terracotta">.</span>Direct</p>
+          <p className="font-display text-xl text-foreground">Didi<span className="text-terracotta">.</span>Direct</p>
           <nav className="flex gap-1 overflow-x-auto rounded-lg border border-slate-200 p-1">
             {tabs.map(({ id, label, icon: Icon }) => (
-              <button key={id} onClick={() => setTab(id)} className={`flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-semibold ${tab === id ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-primary"}`}>
+              <button key={id} onClick={() => setTab(id)} className={`flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-semibold ${tab === id ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"}`}>
                 <Icon className="h-4 w-4" />{label}
                 {id === "leader" && pending > 0 && <span className="rounded-full bg-terracotta px-1.5 text-xs text-primary-foreground">{pending}</span>}
               </button>

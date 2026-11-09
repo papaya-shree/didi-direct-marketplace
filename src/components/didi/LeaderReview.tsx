@@ -18,7 +18,7 @@ function ReviewCard({ p, update, remove }: { p: Product; update: (p: Product) =>
       <div className="flex gap-4 border-b border-slate-200 p-4">
         <img src={p.image} alt={p.title} className="h-20 w-20 rounded-lg object-cover" />
         <div className="min-w-0">
-          <p className="font-semibold text-primary">{p.title}</p>
+          <p className="font-semibold text-foreground">{p.title}</p>
           <p className="text-sm text-muted-foreground">{p.titleHi} · {p.maker}</p>
           <p className="text-xs text-muted-foreground">{col?.name}, {col?.state}</p>
         </div>
@@ -41,7 +41,7 @@ function Formula({ materials, hours, margin, usd }: { materials: number; hours: 
   return (
     <div className="rounded-lg bg-muted p-3 font-mono text-xs leading-relaxed">
       (₹{materials} + {hours}h × ₹{WAGE_FLOOR_INR}) ÷ (1 − {margin}) × {FX_USD_PER_INR}
-      <div className="mt-1 font-display text-2xl text-primary">${usd.toFixed(2)} <span className="font-sans text-xs text-muted-foreground">USD</span></div>
+      <div className="mt-1 font-display text-2xl text-foreground">${usd.toFixed(2)} <span className="font-sans text-xs text-muted-foreground">USD</span></div>
     </div>
   );
 }
@@ -56,9 +56,9 @@ function PricingModal({ p, onClose, onSave }: { p: Product; onClose: () => void;
     </label>
   );
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/40 p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4" onClick={onClose}>
       <div role="dialog" aria-label="Edit pricing" className="w-full max-w-md rounded-xl border border-slate-200 bg-card p-6" onClick={(e) => e.stopPropagation()}>
-        <div className="mb-4 flex items-start justify-between"><div><p className="font-semibold text-primary">Edit pricing</p><p className="text-sm text-muted-foreground">{p.title}</p></div><button onClick={onClose} aria-label="Close"><X className="h-5 w-5" /></button></div>
+        <div className="mb-4 flex items-start justify-between"><div><p className="font-semibold text-foreground">Edit pricing</p><p className="text-sm text-muted-foreground">{p.title}</p></div><button onClick={onClose} aria-label="Close"><X className="h-5 w-5" /></button></div>
         <label className="text-xs text-muted-foreground">Title<input value={d.title} onChange={(e) => setD({ ...d, title: e.target.value })} className="mt-1 mb-3 w-full rounded-md border border-slate-200 px-2 py-2 text-sm text-foreground" /></label>
         <div className="grid grid-cols-3 gap-2">{field("Materials ₹", "materials")}{field("Hours", "hours")}{field("Margin (0–0.99)", "margin", 0.05)}</div>
         <div className="mt-3">{valid ? <Formula materials={d.materials} hours={d.hours} margin={d.margin} usd={usd} /> : <p className="text-sm text-destructive">Margin must be between 0 and 0.99.</p>}</div>
