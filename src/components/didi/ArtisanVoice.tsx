@@ -23,16 +23,60 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
   };
 
   const [elapsed, setElapsed] = useState(0);
-  void stopRef; void setError;
+  const [level, setLevel] = useState(0);
+  const [live, setLive] = useState("");
+  const MAX = 15;
 
   const record = async () => {
-    if (stage === "recording" || stage === "processing") return;
-    setDraft(null); setElapsed(0); setStage("recording");
+    if (stage === "recording") { stopRef.current?.(); return; }
+    if (stage === "processing") return;
+    setDraft(null); setElapsed(0); setError(null); setLive("");
+
+    let stream: MediaStream | null = null;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch {
+      setError("Mic band hai. Browser mein mic allow karein, ya app ko naye tab mein kholein. Abhi demo awaaz chal rahi hai.");
+    }
+
+    setStage("recording");
     const start = Date.now();
-    const iv = setInterval(() => setElapsed(Math.min(3, (Date.now() - start) / 1000)), 100);
-    await new Promise((r) => setTimeout(r, 3000));
-    clearInterval(iv); setElapsed(3);
-    await finish("");
+    let text = "";
+    let ended = false;
+
+    // Real audio level for the waveform
+    let ctx: AudioContext | null = null; let raf = 0;
+    if (stream) {
+      ctx = new AudioContext();
+      const an = ctx.createAnalyser(); an.fftSize = 256;
+      ctx.createMediaStreamSource(stream).connect(an);
+      const buf = new Uint8Array(an.frequencyBinCount);
+      const tick = () => { an.getByteFrequencyData(buf); setLevel(buf.reduce((a, b) => a + b, 0) / buf.length / 128); raf = requestAnimationFrame(tick); };
+      tick();
+    }
+
+    const w = window as unknown as { SpeechRecognition?: new () => any; webkitSpeechRecognition?: new () => any };
+    const SR = stream ? (w.SpeechRecognition ?? w.webkitSpeechRecognition) : undefined;
+    const rec = SR ? new SR() : null;
+
+    const end = () => {
+      if (ended) return; ended = true;
+      clearInterval(iv); clearTimeout(cap); cancelAnimationFrame(raf);
+      stream?.getTracks().forEach((t) => t.stop()); void ctx?.close();
+      try { rec?.stop(); } catch { /* already stopped */ }
+      stopRef.current = null; setLevel(0);
+      void finish(text.trim());
+    };
+    const iv = setInterval(() => setElapsed((Date.now() - start) / 1000), 100);
+    const cap = setTimeout(end, (stream ? MAX : 3) * 1000);
+    stopRef.current = end;
+
+    if (rec) {
+      rec.lang = "hi-IN"; rec.continuous = true; rec.interimResults = true;
+      rec.onresult = (e: any) => { text = Array.from(e.results as ArrayLike<any>).map((r: any) => r[0].transcript).join(" "); setLive(text); };
+      rec.onerror = () => {};
+      try { rec.start(); } catch { /* ignore */ }
+    }
   };
 
   const submit = () => {
