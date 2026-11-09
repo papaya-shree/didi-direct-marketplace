@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Zap, Loader2, Landmark } from "lucide-react";
+import { Zap, Loader2, Landmark, CheckCircle2 } from "lucide-react";
 import type { Settlement } from "@/lib/data";
 import { FX_INR_PER_USD } from "@/lib/pricing";
 
 export function FederationLedger({ rows, setRows }: { rows: Settlement[]; setRows: (r: Settlement[]) => void }) {
   const [busy, setBusy] = useState(false);
   const [log, setLog] = useState<string[]>([]);
+  const [toast, setToast] = useState<string | null>(null);
   const usd = rows.reduce((a, r) => a + r.usd, 0);
   const inr = rows.filter((r) => r.status === "Settled").reduce((a, r) => a + r.inr, 0);
   const pending = rows.filter((r) => r.status === "Pending");
@@ -17,6 +18,9 @@ export function FederationLedger({ rows, setRows }: { rows: Settlement[]; setRow
     setRows(rows.map((r) => (map.has(r.id) ? { ...r, status: "Settled", hash: map.get(r.id) ?? "" } : r)));
     setLog((l) => [...res.settled.map((s: { id: string; hash: string; at: string }) => `${s.at.slice(11, 19)}  ${s.hash}  → UPI credited`), ...(res.settled.length ? [] : [`${new Date().toISOString().slice(11, 19)}  nothing pending`]), ...l]);
     setBusy(false);
+    const n = res.settled.length;
+    setToast(n ? `${n} UPI payout${n > 1 ? "s" : ""} settled instantly` : "Nothing pending to settle");
+    setTimeout(() => setToast(null), 3500);
   };
 
   const stat = (label: string, v: string) => <div className="rounded-xl border border-slate-200 bg-card p-5"><p className="text-xs uppercase tracking-wider text-muted-foreground">{label}</p><p className="mt-1 font-display text-3xl text-primary">{v}</p></div>;
@@ -38,6 +42,7 @@ export function FederationLedger({ rows, setRows }: { rows: Settlement[]; setRow
             </tr>))}</tbody>
         </table>
       </div>
+      {toast && <div role="status" className="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full bg-success px-4 py-2 text-sm font-semibold text-success-foreground"><CheckCircle2 className="h-4 w-4" />{toast}</div>}
       {log.length > 0 && <pre className="max-h-48 overflow-auto rounded-xl bg-primary p-4 font-mono text-xs text-primary-foreground">{log.join("\n")}</pre>}
     </div>
   );
