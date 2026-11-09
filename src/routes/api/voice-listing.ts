@@ -19,26 +19,19 @@ const GENERIC: Meta = { title: "Handmade Craft Piece", titleHi: "हस्तन
 const fromText = (s: string) => KEYWORDS.find(([re]) => re.test(s))?.[1] ?? null;
 
 async function fromImage(image: string): Promise<Meta | null> {
-  const key = process.env.LOVABLE_API_KEY;
-  if (!key) return null;
   try {
-    const r = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [{
-          role: "user",
-          content: [
-            { type: "text", text: 'This is a photo of an Indian handicraft for sale. Reply ONLY with JSON: {"title": short English product title like "Handcrafted Dupatta" or "Terracotta Jewelry", "titleHi": same title in Hindi (Devanagari), "craft": one-word category, "description": one appealing English sentence describing what is visible}.' },
-            { type: "image_url", image_url: { url: image } },
-          ],
-        }],
-      }),
+    const { generateResponse } = await import("@lovable.dev/ai-gateway");
+    const r = await generateResponse({
+      model: "openai/gpt-6.1-terra",
+      input: [{
+        role: "user",
+        content: [
+          { type: "input_text", text: 'This is a photo of an Indian handicraft for sale. Reply ONLY with JSON: {"title": short English product title like "Handcrafted Dupatta" or "Terracotta Jewelry", "titleHi": same title in Hindi (Devanagari), "craft": one-word category, "description": one appealing English sentence describing what is visible}.' },
+          { type: "input_image", image_url: image },
+        ],
+      }],
     });
-    if (!r.ok) return null;
-    const j = (await r.json()) as { choices?: { message?: { content?: string } }[] };
-    const txt = j.choices?.[0]?.message?.content ?? "";
+    const txt = (r.output ?? []).flatMap((o) => ("content" in o && Array.isArray(o.content) ? o.content : [])).map((c) => ("text" in c ? String(c.text) : "")).join("");
     const m = JSON.parse(txt.slice(txt.indexOf("{"), txt.lastIndexOf("}") + 1)) as Meta;
     return m.title ? m : null;
   } catch {
