@@ -72,6 +72,18 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
             <button onClick={record} className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 py-3 font-semibold text-terracotta"><Mic className="h-4 w-4" /> Dobara bolein</button>
             <button onClick={submit} className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 font-semibold text-primary-foreground"><Send className="h-4 w-4" /> Bhejein (Submit)</button>
           </div>
+        ) : stage === "recording" || stage === "processing" ? (
+          <div className="py-4 text-center" aria-live="polite">
+            <div className="flex h-16 items-center justify-center gap-1">
+              {Array.from({ length: 24 }).map((_, i) => (
+                <span key={i} className={`w-1.5 rounded-full bg-terracotta ${stage === "recording" ? "animate-wave" : "opacity-30"}`} style={{ height: `${20 + ((i * 37) % 60)}%`, animationDelay: `${(i % 8) * 0.09}s` }} />
+              ))}
+            </div>
+            <p className="mt-3 font-mono text-2xl text-primary">0:0{Math.floor(elapsed)}.{Math.floor((elapsed % 1) * 10)}</p>
+            <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+              {stage === "processing" ? <><Loader2 className="h-4 w-4 animate-spin" />Hindi samajh rahe hain…</> : <><span className="h-2 w-2 animate-pulse rounded-full bg-destructive" />Sun rahe hain…</>}
+            </p>
+          </div>
         ) : (
           <div className="grid grid-cols-2 gap-3">
             <label className="flex cursor-pointer flex-col items-center gap-2 rounded-2xl border border-slate-200 py-6 text-primary">
