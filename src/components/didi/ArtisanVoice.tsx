@@ -23,16 +23,60 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
   };
 
   const [elapsed, setElapsed] = useState(0);
-  void stopRef; void setError;
+  const [level, setLevel] = useState(0);
+  const [live, setLive] = useState("");
+  const MAX = 15;
 
   const record = async () => {
-    if (stage === "recording" || stage === "processing") return;
-    setDraft(null); setElapsed(0); setStage("recording");
+    if (stage === "recording") { stopRef.current?.(); return; }
+    if (stage === "processing") return;
+    setDraft(null); setElapsed(0); setError(null); setLive("");
+
+    let stream: MediaStream | null = null;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch {
+      setError("Mic band hai. Browser mein mic allow karein, ya app ko naye tab mein kholein. Abhi demo awaaz chal rahi hai.");
+    }
+
+    setStage("recording");
     const start = Date.now();
-    const iv = setInterval(() => setElapsed(Math.min(3, (Date.now() - start) / 1000)), 100);
-    await new Promise((r) => setTimeout(r, 3000));
-    clearInterval(iv); setElapsed(3);
-    await finish("");
+    let text = "";
+    let ended = false;
+
+    // Real audio level for the waveform
+    let ctx: AudioContext | null = null; let raf = 0;
+    if (stream) {
+      ctx = new AudioContext();
+      const an = ctx.createAnalyser(); an.fftSize = 256;
+      ctx.createMediaStreamSource(stream).connect(an);
+      const buf = new Uint8Array(an.frequencyBinCount);
+      const tick = () => { an.getByteFrequencyData(buf); setLevel(buf.reduce((a, b) => a + b, 0) / buf.length / 128); raf = requestAnimationFrame(tick); };
+      tick();
+    }
+
+    const w = window as unknown as { SpeechRecognition?: new () => any; webkitSpeechRecognition?: new () => any };
+    const SR = stream ? (w.SpeechRecognition ?? w.webkitSpeechRecognition) : undefined;
+    const rec = SR ? new SR() : null;
+
+    const end = () => {
+      if (ended) return; ended = true;
+      clearInterval(iv); clearTimeout(cap); cancelAnimationFrame(raf);
+      stream?.getTracks().forEach((t) => t.stop()); void ctx?.close();
+      try { rec?.stop(); } catch { /* already stopped */ }
+      stopRef.current = null; setLevel(0);
+      void finish(text.trim());
+    };
+    const iv = setInterval(() => setElapsed((Date.now() - start) / 1000), 100);
+    const cap = setTimeout(end, (stream ? MAX : 3) * 1000);
+    stopRef.current = end;
+
+    if (rec) {
+      rec.lang = "hi-IN"; rec.continuous = true; rec.interimResults = true;
+      rec.onresult = (e: any) => { text = Array.from(e.results as ArrayLike<any>).map((r: any) => r[0].transcript).join(" "); setLive(text); };
+      rec.onerror = () => {};
+      try { rec.start(); } catch { /* ignore */ }
+    }
   };
 
   const submit = () => {
@@ -76,13 +120,16 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
           <div className="py-4 text-center" aria-live="polite">
             <div className="flex h-16 items-center justify-center gap-1">
               {Array.from({ length: 24 }).map((_, i) => (
-                <span key={i} className={`w-1.5 rounded-full bg-terracotta ${stage === "recording" ? "animate-wave" : "opacity-30"}`} style={{ height: `${20 + ((i * 37) % 60)}%`, animationDelay: `${(i % 8) * 0.09}s` }} />
+                <span key={i} className={`w-1.5 rounded-full bg-terracotta transition-all ${stage === "recording" ? "animate-wave" : "opacity-30"}`} style={{ height: `${Math.min(100, (20 + ((i * 37) % 60)) * (0.5 + level * 1.5))}%`, animationDelay: `${(i % 8) * 0.09}s` }} />
               ))}
             </div>
-            <p className="mt-3 font-mono text-2xl text-primary">0:0{Math.floor(elapsed)}.{Math.floor((elapsed % 1) * 10)}</p>
+            <p className="mt-3 font-mono text-2xl text-primary">0:{String(Math.floor(elapsed)).padStart(2, "0")}.{Math.floor((elapsed % 1) * 10)}</p>
             <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
               {stage === "processing" ? <><Loader2 className="h-4 w-4 animate-spin" />Hindi samajh rahe hain…</> : <><span className="h-2 w-2 animate-pulse rounded-full bg-destructive" />Sun rahe hain…</>}
             </p>
+            {live && <p className="mt-3 rounded-lg bg-muted p-2 text-sm">{live}</p>}
+            {error && <p className="mt-3 text-xs text-destructive">{error}</p>}
+            {stage === "recording" && <button onClick={record} className="mt-4 w-full rounded-xl bg-primary py-3 font-semibold text-primary-foreground">Ruko (Stop)</button>}
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3">
