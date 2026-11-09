@@ -82,7 +82,7 @@
 
 :root {
   --radius: 0.5rem;
-  --background: oklch(0.984 0.003 247.858); /* #F8FAFC */
+  --background: oklch(0.961 0.012 86); /* #F5F2EB warm sand */
   --foreground: oklch(0.208 0.042 265.755); /* #0F172A */
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.208 0.042 265.755);
