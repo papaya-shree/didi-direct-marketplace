@@ -1,18 +1,25 @@
 import { useRef, useState } from "react";
 import { Camera, Mic, Loader2, CheckCircle2, Send, AudioLines, Sparkles, ShieldCheck } from "lucide-react";
 import type { Product } from "@/lib/data";
+import { extractNumbers } from "@/lib/extract";
+
+async function shrink(f: File): Promise<string> {
+  const b = await createImageBitmap(f); const k = Math.min(1, 640 / Math.max(b.width, b.height));
+  const c = document.createElement("canvas"); c.width = b.width * k; c.height = b.height * k;
+  c.getContext("2d")!.drawImage(b, 0, 0, c.width, c.height); return c.toDataURL("image/jpeg", 0.8);
+}
 
 type Memo = { title: string; transcript: string; at: string; secs: number };
 const sampleMemos: Memo[] = [];
 
-type Draft = { title: string; titleHi: string; description: string; craft: string; materials: number; hours: number; transcript: string };
+type Draft = { title: string; titleHi: string; description: string; craft: string; materials: number; hours: number; transcript: string; guessed: boolean };
 
 export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
   const [photo, setPhoto] = useState<string | null>(null);
   const [stage, setStage] = useState<"idle" | "recording" | "processing" | "done">("idle");
   const [draft, setDraft] = useState<Draft | null>(null);
   const [sent, setSent] = useState(false);
-  const seed = useRef(0);
+  const [fileName, setFileName] = useState("");
   const elapsedRef = useRef(0);
   const [memos, setMemos] = useState<Memo[]>(sampleMemos);
 
@@ -21,9 +28,11 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
 
   const finish = async (spoken: string) => {
     setStage("processing");
-    const res = await fetch("/api/voice-listing", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ seed: seed.current++ }) });
+    const res = await fetch("/api/voice-listing", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ transcript: spoken, image: photo, filename: fileName }) });
     const json = await res.json();
-    const nd = { ...json.draft, transcript: spoken || json.draft.transcript };
+    const transcript: string = json.draft.transcript;
+    const n = extractNumbers(transcript);
+    const nd: Draft = { ...json.draft, transcript, materials: n.materials ?? 200, hours: n.hours ?? 4, guessed: n.materials === null || n.hours === null };
     setDraft(nd);
     setMemos((m) => [{ title: nd.title, transcript: nd.transcript, at: new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }), secs: Math.max(3, Math.round(elapsedRef.current)) }, ...m].slice(0, 5));
     setStage("done");
@@ -135,6 +144,7 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
               <p className="font-semibold text-foreground">{draft.title}</p>
               <p className="text-muted-foreground">{draft.description}</p>
               <p className="mt-2 text-xs text-muted-foreground">₹{draft.materials} materials · {draft.hours} hrs · {draft.craft}</p>
+              {draft.guessed && <p className="text-xs text-terracotta">Kimat ya ghante sunai nahi diye, andaza lagaya. Leader badal sakti hain.</p>}
             </div>
             <button onClick={record} className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 py-3 font-semibold text-terracotta"><Mic className="h-4 w-4" /> Dobara bolein</button>
             <button onClick={submit} className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 font-semibold text-primary-foreground"><Send className="h-4 w-4" /> Bhejein (Submit)</button>
@@ -159,7 +169,7 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
             <label className="flex cursor-pointer flex-col items-center gap-2 rounded-2xl border border-slate-200 py-6 text-foreground">
               <Camera className="h-7 w-7" />
               <span className="text-sm font-semibold">{photo ? "Badlein" : "Photo"}</span>
-              <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) setPhoto(URL.createObjectURL(f)); }} />
+              <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) { setFileName(f.name); void shrink(f).then(setPhoto); } }} />
             </label>
             <button onClick={record} className="flex flex-col items-center gap-2 rounded-2xl bg-terracotta py-6 text-primary-foreground">
               <Mic className="h-7 w-7" />
