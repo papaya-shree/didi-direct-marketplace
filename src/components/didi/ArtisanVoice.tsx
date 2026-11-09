@@ -1,6 +1,12 @@
 import { useRef, useState } from "react";
-import { Camera, Mic, Loader2, CheckCircle2, Send } from "lucide-react";
+import { Camera, Mic, Loader2, CheckCircle2, Send, AudioLines, Sparkles, ShieldCheck } from "lucide-react";
 import type { Product } from "@/lib/data";
+
+type Memo = { title: string; transcript: string; at: string; secs: number };
+const sampleMemos: Memo[] = [
+  { title: "Mirror-work Tote Bag", transcript: "ये शीशे की कढ़ाई वाला थैला है, आठ घंटे लगे…", at: "Kal, 4:10 pm", secs: 12 },
+  { title: "Hand-block Printed Dupatta", transcript: "दाबू प्रिंट का दुपट्टा, बारह घंटे लगे…", at: "Somvar, 11:30 am", secs: 9 },
+];
 
 type Draft = { title: string; titleHi: string; description: string; craft: string; materials: number; hours: number; transcript: string };
 
@@ -10,6 +16,8 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [sent, setSent] = useState(false);
   const seed = useRef(0);
+  const elapsedRef = useRef(0);
+  const [memos, setMemos] = useState<Memo[]>(sampleMemos);
 
   const [error, setError] = useState<string | null>(null);
   const stopRef = useRef<(() => void) | null>(null);
@@ -18,7 +26,9 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
     setStage("processing");
     const res = await fetch("/api/voice-listing", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ seed: seed.current++ }) });
     const json = await res.json();
-    setDraft({ ...json.draft, transcript: spoken || json.draft.transcript });
+    const nd = { ...json.draft, transcript: spoken || json.draft.transcript };
+    setDraft(nd);
+    setMemos((m) => [{ title: nd.title, transcript: nd.transcript, at: new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }), secs: Math.max(3, Math.round(elapsedRef.current)) }, ...m].slice(0, 5));
     setStage("done");
   };
 
@@ -67,7 +77,7 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
       stopRef.current = null; setLevel(0);
       void finish(text.trim());
     };
-    const iv = setInterval(() => setElapsed((Date.now() - start) / 1000), 100);
+    const iv = setInterval(() => (elapsedRef.current = (Date.now() - start) / 1000, setElapsed(elapsedRef.current)), 100);
     const cap = setTimeout(end, (stream ? MAX : 3) * 1000);
     stopRef.current = end;
 
@@ -88,7 +98,23 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
   const reset = () => { setPhoto(null); setDraft(null); setStage("idle"); setSent(false); };
 
   return (
-    <div className="mx-auto flex max-w-sm flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-muted" style={{ minHeight: 640 }}>
+    <div className="grid items-start gap-6 lg:grid-cols-[1fr_24rem_1fr]">
+    <aside className="hidden rounded-xl border border-slate-200 bg-card p-6 lg:block">
+      <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Kaise kaam karta hai</p>
+      <ol className="mt-4 space-y-5">
+        {[
+          { icon: Mic, t: "Speak in Hindi", s: "Photo lein aur apne saman ke baare mein bolein." },
+          { icon: Sparkles, t: "AI creates story & USD price", s: "English listing and a fair-wage dollar price." },
+          { icon: ShieldCheck, t: "Leader approves", s: "Your collective leader checks it and publishes." },
+        ].map(({ icon: Icon, t, s }, i) => (
+          <li key={t} className="flex gap-3">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">{i + 1}</span>
+            <div><p className="flex items-center gap-1.5 font-semibold text-foreground"><Icon className="h-4 w-4 text-primary" />{t}</p><p className="text-sm text-muted-foreground">{s}</p></div>
+          </li>
+        ))}
+      </ol>
+    </aside>
+    <div className="mx-auto flex w-full max-w-sm flex-col overflow-hidden rounded-[2rem] border border-slate-300 bg-card shadow-md" style={{ minHeight: 640 }}>
       <div className="flex-1 p-6">
         <p className="text-xs uppercase tracking-widest text-muted-foreground">नमस्ते, कमला दीदी</p>
         <h2 className="mt-1 font-display text-3xl text-foreground">नया सामान बेचें</h2>
@@ -146,6 +172,19 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
           </div>
         )}
       </div>
+    </div>
+    <aside className="hidden rounded-xl border border-slate-200 bg-card p-6 lg:block">
+      <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Recent Voice Memos</p>
+      <ul className="mt-4 divide-y divide-slate-200">
+        {memos.map((m, i) => (
+          <li key={i} className="py-3 first:pt-0">
+            <div className="flex items-center justify-between gap-2"><p className="flex items-center gap-1.5 text-sm font-semibold text-foreground"><AudioLines className="h-4 w-4 text-primary" />{m.title}</p><span className="text-xs text-muted-foreground">0:{String(m.secs).padStart(2, "0")}</span></div>
+            <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{m.transcript}</p>
+            <p className="mt-1 text-xs text-muted-foreground">{m.at}</p>
+          </li>
+        ))}
+      </ul>
+    </aside>
     </div>
   );
 }
