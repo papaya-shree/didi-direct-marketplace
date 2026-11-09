@@ -27,7 +27,7 @@ async function fromImage(image: string): Promise<Meta | null> {
         role: "user",
         content: [
           { type: "input_text", text: 'This is a photo of an Indian handicraft for sale. Reply ONLY with JSON: {"title": short English product title like "Handcrafted Dupatta" or "Terracotta Jewelry", "titleHi": same title in Hindi (Devanagari), "craft": one-word category, "description": one appealing English sentence describing what is visible}.' },
-          { type: "input_image", image_url: image },
+          { type: "input_image", image_url: image, detail: "low" },
         ],
       }],
     });
