@@ -31,7 +31,8 @@ async function fromImage(image: string): Promise<Meta | null> {
         ],
       }],
     });
-    const txt = (r.output ?? []).flatMap((o) => ("content" in o && Array.isArray(o.content) ? o.content : [])).map((c) => ("text" in c ? String(c.text) : "")).join("");
+    const items = (r.output ?? []) as unknown as { type?: string; content?: { type?: string; text?: string }[] }[];
+    const txt = items.filter((o) => o.type === "message").flatMap((o) => o.content ?? []).filter((c) => c.type === "output_text").map((c) => c.text ?? "").join("");
     const m = JSON.parse(txt.slice(txt.indexOf("{"), txt.lastIndexOf("}") + 1)) as Meta;
     return m.title ? m : null;
   } catch {
