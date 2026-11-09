@@ -36,7 +36,7 @@ export function BuyerStorefront({ products, onSold }: { products: Product[]; onS
                 <p className="mt-1 flex-1 text-sm text-muted-foreground">{p.description}</p>
                 <p className="mt-2 text-xs text-muted-foreground">By {p.maker} · {col?.name}</p>
                 <p className="mt-3 font-display text-2xl text-primary">${price(p).toFixed(2)}</p>
-                <button disabled={p.status === "Sold" || paying === p.id} onClick={() => checkout(p)} className="mt-3 flex items-center justify-center gap-2 rounded-full bg-paypal py-2.5 text-sm font-bold text-paypal-foreground disabled:opacity-40">
+                <button disabled={p.status === "Sold" || paying === p.id} onClick={() => checkout(p)} aria-label="Pay with PayPal" className="mt-3 flex items-center justify-center gap-2 rounded-full bg-paypal py-2.5 text-sm font-bold text-paypal-foreground disabled:opacity-40">
                   {paying === p.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <><span className="italic">Pay</span><span className="-ml-2 italic text-paypal-accent">Pal</span> Checkout</>}
                 </button>
                 <button onClick={() => setInvoiceFor(p)} className="mt-2 flex items-center justify-center gap-1 rounded-full border border-slate-200 py-2 text-sm font-semibold"><FileText className="h-4 w-4" />Request Custom Invoice</button>
