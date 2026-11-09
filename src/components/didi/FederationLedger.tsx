@@ -43,7 +43,7 @@ export function FederationLedger({ rows, setRows }: { rows: Settlement[]; setRow
         </table>
       </div>
       {toast && <div role="status" className="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full bg-success px-4 py-2 text-sm font-semibold text-success-foreground"><CheckCircle2 className="h-4 w-4" />{toast}</div>}
-      {log.length > 0 && <pre className="max-h-48 overflow-auto rounded-xl bg-primary p-4 font-mono text-xs text-primary-foreground">{log.join("\n")}</pre>}
+      {log.length > 0 && <pre className="max-h-48 overflow-auto rounded-xl bg-foreground p-4 font-mono text-xs text-background">{log.join("\n")}</pre>}
     </div>
   );
 }

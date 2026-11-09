@@ -29,7 +29,7 @@ export function BuyerStorefront({ products, onSold }: { products: Product[]; onS
           const col = collectives.find((c) => c.id === p.collectiveId);
           return (
             <div key={p.id} className="flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-card">
-              <div className="relative"><img src={p.image} alt={p.title} className="aspect-[4/3] w-full object-cover" />{p.status === "Sold" && <span className="absolute left-3 top-3 rounded-full bg-primary px-2 py-0.5 text-xs font-semibold text-primary-foreground">Sold</span>}</div>
+              <div className="relative"><img src={p.image} alt={p.title} className="aspect-[4/3] w-full object-cover" />{p.status === "Sold" && <span className="absolute left-3 top-3 rounded-full bg-foreground px-2 py-0.5 text-xs font-semibold text-background">Sold</span>}</div>
               <div className="flex flex-1 flex-col p-4">
                 <p className="text-xs uppercase tracking-wider text-terracotta">{p.craft}</p>
                 <p className="font-semibold text-foreground">{p.title}</p>
