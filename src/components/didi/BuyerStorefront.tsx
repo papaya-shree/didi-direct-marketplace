@@ -24,6 +24,7 @@ export function BuyerStorefront({ products, onSold }: { products: Product[]; onS
   return (
     <div>
       <div className="mb-6"><h2 className="font-display text-3xl text-foreground">Handmade, direct from the maker.</h2><p className="text-muted-foreground">Every purchase pays a woman artisan in India within minutes.</p></div>
+      {visible.length === 0 && <div className="rounded-xl border border-slate-200 bg-card p-12 text-center text-muted-foreground">No products live yet. Published items will appear here.</div>}
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {visible.map((p) => {
           const col = collectives.find((c) => c.id === p.collectiveId);
