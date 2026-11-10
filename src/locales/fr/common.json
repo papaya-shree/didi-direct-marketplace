@@ -1,0 +1,159 @@
+{
+  "brand": {
+    "name": "Didi Direct",
+    "prefix": "Didi",
+    "suffix": "Direct",
+    "tagline": "Handmade by Indian women artisans, sold worldwide.",
+    "metaDescription": "Voice-first listings, fair deterministic pricing, PayPal checkout and instant UPI payouts for women artisan collectives."
+  },
+  "roles": {
+    "artisan": "Voix de l'artisane",
+    "leader": "Examen de la responsable",
+    "buyer": "Boutique acheteur",
+    "ledger": "Grand livre de la fédération"
+  },
+  "status": {
+    "Pending_Review": "En révision",
+    "Live": "En ligne",
+    "Sold": "Vendu",
+    "Pending": "En attente",
+    "Settled": "Réglé"
+  },
+  "common": {
+    "resetDemoData": "Réinitialiser les données de démo",
+    "resetConfirm": "Réinitialiser toutes les données de démo ?",
+    "close": "Fermer",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "submit": "Soumettre",
+    "loading": "Chargement…",
+    "retry": "Réessayer",
+    "goHome": "Accueil",
+    "pageNotFound": "Page non trouvée",
+    "pageNotFoundDesc": "La page recherchée n'existe pas ou a été déplacée.",
+    "pageError": "La page n'a pas pu se charger",
+    "pageErrorDesc": "Une erreur est survenue de notre côté. Vous pouvez actualiser ou retourner à l'accueil."
+  },
+  "artisan": {
+    "howItWorksTitle": "Comment ça fonctionne",
+    "steps": {
+      "step1Title": "Parlez de votre création",
+      "step1Desc": "Prenez une photo et décrivez votre création avec votre voix.",
+      "step2Title": "L'IA crée l'histoire et le prix en USD",
+      "step2Desc": "Fiche en anglais avec un prix en dollars assurant un salaire équitable.",
+      "step3Title": "Validation de la responsable",
+      "step3Desc": "La responsable de votre collectif valide et publie."
+    },
+    "greeting": "Bonjour, Kamla Didi",
+    "newListingTitle": "Mettre en vente un nouvel article",
+    "instruction": "Prenez une photo, puis décrivez-la à la voix.",
+    "photoUploadAlt": "Photo de l'artisanat",
+    "changePhoto": "Modifier",
+    "takePhoto": "Photo",
+    "bolo": "Parler",
+    "listening": "À l'écoute…",
+    "processing": "Compréhension de votre voix…",
+    "stop": "Arrêter",
+    "voiceNotSupported": "La reconnaissance vocale n'est pas disponible pour cette langue sur votre navigateur. Veuillez saisir votre description ci-dessous.",
+    "typeFallbackPlaceholder": "Ex. Écharpe en soie rouge faite main, 6 heures de travail, coût des matières ₹300...",
+    "continueWithText": "Continuer avec la description textuelle",
+    "sentSuccessTitle": "Envoyé à la responsable du collectif !",
+    "sentSuccessSubtitle": "Transmis pour révision.",
+    "createAnother": "Mettre un autre article en vente",
+    "draftQuote": "“{{transcript}}”",
+    "itemSummary": "₹{{materials}} matières · {{hours}} h · {{craft}}",
+    "materialsCost": "₹{{materials}} matières",
+    "hoursSpent": "{{hours}} h",
+    "guessedNotice": "Coûts ou heures non détectés clairement ; estimés automatiquement. Votre responsable peut les ajuster avant publication.",
+    "speakAgain": "Parler à nouveau",
+    "submitToLeader": "Envoyer à la responsable",
+    "recentMemosTitle": "Mémos vocaux récents",
+    "noMemos": "Aucun mémo vocal pour l'instant. Appuyez sur « Parler » pour commencer.",
+    "micError": "Microphone inaccessible. Veuillez autoriser le microphone dans votre navigateur. Lecture de la voix de démo."
+  },
+  "leader": {
+    "queueClear": "La file de révision est vide.",
+    "deterministicPriceTitle": "Prix déterministe",
+    "publish": "Publier",
+    "edit": "Modifier",
+    "reject": "Rejeter",
+    "formulaLabel": "(₹{{materials}} + {{hours}}h × ₹{{wageFloor}}) ÷ (1 − {{margin}}) × {{fx}}",
+    "usdBadge": "USD",
+    "editModalTitle": "Modifier le tarif",
+    "titleField": "Titre",
+    "materialsField": "Matières ₹",
+    "hoursField": "Heures",
+    "marginField": "Marge (0–0.99)",
+    "marginError": "La marge doit être comprise entre 0 et 0.99.",
+    "savePrice": "Enregistrer le prix"
+  },
+  "storefront": {
+    "headline": "Fait main, directement auprès de l'artisane.",
+    "subheadline": "Chaque achat rémunère une artisane en Inde en quelques minutes.",
+    "emptyState": "Aucun produit en ligne pour l'instant. Les créations validées apparaîtront ici.",
+    "byMaker": "Par {{maker}} · {{collective}}",
+    "payWithPayPal": "Payer avec PayPal",
+    "payPalCheckout": "Payer avec PayPal",
+    "requestInvoice": "Demander une facture personnalisée",
+    "paidToast": "Payé · {{orderId}}",
+    "customInvoiceTitle": "Facture sur mesure",
+    "emailPlaceholder": "acheteur@entreprise.com",
+    "quantityField": "Quantité",
+    "notesPlaceholder": "Couleurs, tailles, date de livraison…",
+    "estimatedTotal": "Total estimé :",
+    "calculationBreakdown": "(${{unitPrice}} × {{qty}})",
+    "sendInvoice": "Envoyer la facture PayPal",
+    "sending": "Envoi en cours…",
+    "invoiceSentTitle": "Facture {{id}} envoyée",
+    "invoiceSentSubtitle": "Total ${{total}} via facturation PayPal"
+  },
+  "ledger": {
+    "usdReceived": "USD reçus (PayPal)",
+    "inrWithdrawn": "INR virés sur compte bancaire",
+    "fxRate": "Taux de change FX",
+    "flowSummary": "PayPal USD → Compte SBI Fédération → UPI aux artisanes",
+    "simulateSettlement": "Simuler un règlement UPI instantané",
+    "nothingPending": "Aucun règlement en attente",
+    "upiSettledToast_one": "{{count}} paiement UPI réglé instantanément",
+    "upiSettledToast_other": "{{count}} paiements UPI réglés instantanément",
+    "table": {
+      "item": "Article",
+      "usdReceived": "USD reçus",
+      "inrWithdrawn": "INR virés",
+      "maker": "Artisane",
+      "share": "Part",
+      "status": "Statut",
+      "empty": "Aucun paiement pour l'instant. Les ventes de la boutique apparaîtront ici."
+    },
+    "upiCredited": "UPI crédité",
+    "nothingPendingLog": "rien en attente"
+  },
+  "assistant": {
+    "title": "Assistant Didi",
+    "toggleAria": "Assistant",
+    "initialMessage": "Bonjour ! Posez-moi des questions sur chaque pièce. Je ne peux pas modifier les prix.",
+    "inputPlaceholder": "Une question sur une création…",
+    "sendAria": "Envoyer",
+    "responses": {
+      "discount": "Les prix sont établis selon une formule équitable et transparente, je ne peux pas les modifier. Pour des commandes en gros, demandez une facture sur mesure.",
+      "productDetail": "{{title}}: {{description}} Réalisé par {{maker}} en environ {{hours}} heures. Prix : ${{price}} (fixe).",
+      "shipping": "Expédition internationale depuis l'Inde, généralement en 7 à 12 jours.",
+      "care": "Lavage doux à froid à la main avec un savon délicat, séchage à l'ombre pour préserver les teintes naturelles.",
+      "fallback": "Interrogez-moi sur nos articles, les matières, l'entretien ou la livraison."
+    }
+  },
+  "errors": {
+    "micBlocked": "Microphone bloqué ou inaccessible.",
+    "invalidPricing": "Informations de tarification invalides."
+  },
+  "language": {
+    "switcherLabel": "Langue",
+    "searchPlaceholder": "Rechercher une langue…",
+    "tier1": "Langues de l'Inde",
+    "tier2": "Langues internationales",
+    "tier3": "Autres langues",
+    "machineTranslated": "Traduction automatique",
+    "current": "Langue active"
+  },
+  "brandName": "Didi Direct"
+}

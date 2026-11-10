@@ -1,0 +1,159 @@
+{
+  "brand": {
+    "name": "Didi Direct",
+    "prefix": "Didi",
+    "suffix": "Direct",
+    "tagline": "Handmade by Indian women artisans, sold worldwide.",
+    "metaDescription": "Voice-first listings, fair deterministic pricing, PayPal checkout and instant UPI payouts for women artisan collectives."
+  },
+  "roles": {
+    "artisan": "صوت الحرفية (تحدثي)",
+    "leader": "مراجعة القائدة",
+    "buyer": "متجر المشترين",
+    "ledger": "دفتر الأستاذ للاتحاد"
+  },
+  "status": {
+    "Pending_Review": "قيد المراجعة",
+    "Live": "منشور",
+    "Sold": "تم البيع",
+    "Pending": "قيد الانتظار",
+    "Settled": "تمت التسوية"
+  },
+  "common": {
+    "resetDemoData": "إعادة ضبط البيانات التجريبية",
+    "resetConfirm": "هل تريد إعادة تعيين جميع البيانات التجريبية؟",
+    "close": "إغلاق",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "submit": "إرسال",
+    "loading": "جارٍ التحميل…",
+    "retry": "إعادة المحاولة",
+    "goHome": "الصفحة الرئيسية",
+    "pageNotFound": "الصفحة غير موجودة",
+    "pageNotFoundDesc": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
+    "pageError": "تعذر تحميل هذه الصفحة",
+    "pageErrorDesc": "حدث خطأ ما من جانبنا. يمكنك تحديث الصفحة أو العودة إلى الصفحة الرئيسية."
+  },
+  "artisan": {
+    "howItWorksTitle": "كيف يعمل النظام",
+    "steps": {
+      "step1Title": "تحدثي عن حرفتك",
+      "step1Desc": "التقطي صورة واشرحي بصوتك تفاصيل ما صنعته.",
+      "step2Title": "الذكاء الاصطناعي ينشئ الوصف وسعر الدولار",
+      "step2Desc": "قائمة باللغة الإنجليزية مع أجر عادل محدد بالدولار.",
+      "step3Title": "موافقة القائدة",
+      "step3Desc": "تقوم قائدة المجموعة بمراجعة المنتج ونشره."
+    },
+    "greeting": "أهلاً بك، كاملا ديدي",
+    "newListingTitle": "بيع قطعة جديدة",
+    "instruction": "التقطي صورة ثم اشرحيها بصوتك.",
+    "photoUploadAlt": "صورة الحرفة اليدوية",
+    "changePhoto": "تغيير",
+    "takePhoto": "صورة",
+    "bolo": "تحدثي",
+    "listening": "جارٍ الاستماع…",
+    "processing": "جارٍ فهم الصوت…",
+    "stop": "إيقاف",
+    "voiceNotSupported": "التعرف الصوتي غير متوفر لهذه اللغة في متصفحك. يرجى كتابة الوصف أدناه.",
+    "typeFallbackPlaceholder": "مثال: وشاح حريري أحمر مصنوع يدوياً، استغرق 6 ساعات، تكلفة المواد ₹300...",
+    "continueWithText": "المتابعة بالوصف النصي",
+    "sentSuccessTitle": "تم الإرسال إلى قائدة المجموعة!",
+    "sentSuccessSubtitle": "أُرسل للمراجعة.",
+    "createAnother": "إدراج قطعة أخرى",
+    "draftQuote": "“{{transcript}}”",
+    "itemSummary": "₹{{materials}} مواد · {{hours}} ساعات · {{craft}}",
+    "materialsCost": "₹{{materials}} مواد",
+    "hoursSpent": "{{hours}} ساعات",
+    "guessedNotice": "لم نتمكن من تحديد التكلفة أو الساعات بدقة؛ تم التقدير تلقائياً. يمكن للقائدة تعديل ذلك قبل النشر.",
+    "speakAgain": "تحدثي مجدداً",
+    "submitToLeader": "إرسال للقائدة",
+    "recentMemosTitle": "التسجيلات الصوتية الأخيرة",
+    "noMemos": "لا توجد مذكرات صوتية بعد. اضغطي على «تحدثي» للبدء.",
+    "micError": "الميكروفون غير متاح. يرجى السماح بصلاحيات الميكروفون في المتصفح. يتم تشغيل الصوت التجريبي."
+  },
+  "leader": {
+    "queueClear": "قائمة المراجعة فارغة تماماً.",
+    "deterministicPriceTitle": "تسعير عادل محدد بمعادلة",
+    "publish": "نشر",
+    "edit": "تعديل",
+    "reject": "رفض",
+    "formulaLabel": "(₹{{materials}} + {{hours}}h × ₹{{wageFloor}}) ÷ (1 − {{margin}}) × {{fx}}",
+    "usdBadge": "USD",
+    "editModalTitle": "تعديل السعر",
+    "titleField": "العنوان",
+    "materialsField": "تكلفة المواد ₹",
+    "hoursField": "ساعات العمل",
+    "marginField": "الهامش (0–0.99)",
+    "marginError": "يجب أن يكون الهامش بين 0 و 0.99.",
+    "savePrice": "حفظ السعر"
+  },
+  "storefront": {
+    "headline": "مصنوعة يدوياً، مباشرة من الحرفية.",
+    "subheadline": "كل عملية شراء تدفع لحرفية في الهند في غضون دقائق معدودة.",
+    "emptyState": "لا توجد منتجات منشورة حتى الآن. ستظهر المنتجات المعتمدة هنا.",
+    "byMaker": "صنع بواسطة {{maker}} · {{collective}}",
+    "payWithPayPal": "الدفع بواسطة PayPal",
+    "payPalCheckout": "الدفع عبر PayPal",
+    "requestInvoice": "طلب فاتورة خاصة",
+    "paidToast": "تم الدفع بنجاح · {{orderId}}",
+    "customInvoiceTitle": "فاتورة مخصصة",
+    "emailPlaceholder": "buyer@company.com",
+    "quantityField": "الكمية",
+    "notesPlaceholder": "الألوان، المقاسات، موعد التسليم…",
+    "estimatedTotal": "الإجمالي التقديري:",
+    "calculationBreakdown": "(${{unitPrice}} × {{qty}})",
+    "sendInvoice": "إرسال فاتورة PayPal",
+    "sending": "جارٍ الإرسال…",
+    "invoiceSentTitle": "تم إرسال الفاتورة {{id}}",
+    "invoiceSentSubtitle": "المجموع ${{total}} عبر فوترة PayPal"
+  },
+  "ledger": {
+    "usdReceived": "دولارات مستلمة (PayPal)",
+    "inrWithdrawn": "روبيات مسحوبة إلى البنك",
+    "fxRate": "سعر الصرف FX",
+    "flowSummary": "PayPal USD → حساب SBI للاتحاد → تحويل UPI للحرفيات",
+    "simulateSettlement": "محاكاة تسوية فورية عبر UPI",
+    "nothingPending": "لا توجد مستحقات معلقة للتسوية",
+    "upiSettledToast_one": "تمت تسوية {{count}} مدفوعة UPI فوراً",
+    "upiSettledToast_other": "تمت تسوية {{count}} مدفوعات UPI فوراً",
+    "table": {
+      "item": "المنتج",
+      "usdReceived": "المستلم بالدولار",
+      "inrWithdrawn": "المسحوب بالروبية",
+      "maker": "الحرفية",
+      "share": "الحصة",
+      "status": "الحالة",
+      "empty": "لا توجد مدفوعات حتى الآن. ستظهر مبيعات المتجر هنا."
+    },
+    "upiCredited": "تم إيداع UPI",
+    "nothingPendingLog": "لا يوجد معلق"
+  },
+  "assistant": {
+    "title": "مساعد ديدي",
+    "toggleAria": "المساعد",
+    "initialMessage": "مرحباً! اسألني عن أي قطعة يدوية. الأسعار محددة بمعادلة ولا يمكن تغييرها.",
+    "inputPlaceholder": "اسأل عن القطعة…",
+    "sendAria": "إرسال",
+    "responses": {
+      "discount": "الأسعار محددة بمعادلة أجور عادلة وثابتة، لذا لا يمكنني تغييرها. للطلبات الكبيرة، يرجى استخدام «طلب فاتورة خاصة».",
+      "productDetail": "{{title}}: {{description}} صنعت بواسطة {{maker}} في حوالي {{hours}} ساعات. السعر: ${{price}} (ثابت).",
+      "shipping": "نشحن إلى جميع أنحاء العالم من الهند، عادة خلال 7 إلى 12 يوماً.",
+      "care": "يُغسل يدوياً بالماء البارد مع صابون خفيف، ويُجفف في الظل للحفاظ على ألوان الصبغات الطبيعية.",
+      "fallback": "تفضل بسؤالي عن أي منتج أو مواده أو العناية به أو الشحن."
+    }
+  },
+  "errors": {
+    "micBlocked": "الميكروفون محظور أو غير متوفر.",
+    "invalidPricing": "تفاصيل التسعير غير صحيحة."
+  },
+  "language": {
+    "switcherLabel": "اللغة",
+    "searchPlaceholder": "البحث عن لغة…",
+    "tier1": "لغات الهند",
+    "tier2": "لغات المشترين العالمية",
+    "tier3": "لغات أخرى",
+    "machineTranslated": "ترجمة آلية",
+    "current": "اللغة الحالية"
+  },
+  "brandName": "Didi Direct"
+}
