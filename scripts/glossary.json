@@ -1,0 +1,15 @@
+{
+  "protectedTerms": [
+    "Didi Direct",
+    "PayPal",
+    "UPI",
+    "USD",
+    "INR",
+    "Kamla Didi",
+    "Kamla Devi",
+    "Sakhi Mahila Mandal",
+    "Kantha Didi Sangha",
+    "Chanderi Weavers Collective"
+  ],
+  "note": "Terms listed here and anything matching /{{[^}]+}}/ must be preserved verbatim in all translations."
+}
