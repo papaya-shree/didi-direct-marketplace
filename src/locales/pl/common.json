@@ -1,0 +1,158 @@
+{
+  "brand": {
+    "name": "Didi Direct",
+    "prefix": "Didi",
+    "suffix": "Direct",
+    "tagline": "Handmade by Indian women artisans, sold worldwide.",
+    "metaDescription": "Voice-first listings, fair deterministic pricing, PayPal checkout and instant UPI payouts for women artisan collectives."
+  },
+  "roles": {
+    "artisan": "Artisan Voice (Polski)",
+    "leader": "Leader Review",
+    "buyer": "Buyer Storefront",
+    "ledger": "Federation Ledger"
+  },
+  "status": {
+    "Pending_Review": "Under Review",
+    "Live": "Live",
+    "Sold": "Sold",
+    "Pending": "Pending",
+    "Settled": "Settled"
+  },
+  "common": {
+    "resetDemoData": "Reset Demo Data",
+    "resetConfirm": "Reset all demo data?",
+    "close": "Close",
+    "cancel": "Cancel",
+    "save": "Save",
+    "submit": "Submit",
+    "loading": "Loading…",
+    "retry": "Try again",
+    "goHome": "Go home",
+    "pageNotFound": "Page not found",
+    "pageNotFoundDesc": "The page you're looking for doesn't exist or has been moved.",
+    "pageError": "This page didn't load",
+    "pageErrorDesc": "Something went wrong on our end. You can try refreshing or head back home."
+  },
+  "artisan": {
+    "howItWorksTitle": "How it works",
+    "steps": {
+      "step1Title": "Speak your craft",
+      "step1Desc": "Take a photo and speak naturally about what you made.",
+      "step2Title": "AI creates story & USD price",
+      "step2Desc": "English listing and a fair-wage dollar price.",
+      "step3Title": "Leader approves",
+      "step3Desc": "Your collective leader checks it and publishes."
+    },
+    "greeting": "Namaste, Kamla Didi",
+    "newListingTitle": "Sell a new item",
+    "instruction": "Take a photo, then describe it with your voice.",
+    "photoUploadAlt": "Uploaded craft",
+    "changePhoto": "Change",
+    "takePhoto": "Photo",
+    "bolo": "Speak",
+    "listening": "Listening…",
+    "processing": "Understanding your voice…",
+    "stop": "Stop",
+    "voiceNotSupported": "Voice recognition is not available for this language in your browser. Please type your description below.",
+    "typeFallbackPlaceholder": "e.g. Handmade red silk scarf, took 6 hours, material cost ₹300...",
+    "continueWithText": "Continue with text description",
+    "sentSuccessTitle": "Sent to collective leader!",
+    "sentSuccessSubtitle": "Sent for review.",
+    "createAnother": "List another item",
+    "draftQuote": "“{{transcript}}”",
+    "itemSummary": "₹{{materials}} materials · {{hours}} hrs · {{craft}}",
+    "materialsCost": "₹{{materials}} materials",
+    "hoursSpent": "{{hours}} hrs",
+    "guessedNotice": "Could not clearly detect material cost or hours, estimated automatically. Your leader can adjust before publishing.",
+    "speakAgain": "Speak again",
+    "submitToLeader": "Submit to Leader",
+    "recentMemosTitle": "Recent Voice Memos",
+    "noMemos": "No voice memos yet. Tap “Speak” to begin.",
+    "micError": "Microphone is unavailable. Please grant microphone permission in your browser or open the app in a new tab. Playing demo voice instead."
+  },
+  "leader": {
+    "queueClear": "Queue is clear.",
+    "deterministicPriceTitle": "Deterministic price",
+    "publish": "Publish",
+    "edit": "Edit",
+    "reject": "Reject",
+    "formulaLabel": "(₹{{materials}} + {{hours}}h × ₹{{wageFloor}}) ÷ (1 − {{margin}}) × {{fx}}",
+    "usdBadge": "USD",
+    "editModalTitle": "Edit pricing",
+    "titleField": "Title",
+    "materialsField": "Materials ₹",
+    "hoursField": "Hours",
+    "marginField": "Margin (0–0.99)",
+    "marginError": "Margin must be between 0 and 0.99.",
+    "savePrice": "Save price"
+  },
+  "storefront": {
+    "headline": "Handmade, direct from the maker.",
+    "subheadline": "Every purchase pays a woman artisan in India within minutes.",
+    "emptyState": "No products live yet. Published items will appear here.",
+    "byMaker": "By {{maker}} · {{collective}}",
+    "payWithPayPal": "Pay with PayPal",
+    "payPalCheckout": "PayPal Checkout",
+    "requestInvoice": "Request Custom Invoice",
+    "paidToast": "Paid · {{orderId}}",
+    "customInvoiceTitle": "Custom invoice",
+    "emailPlaceholder": "buyer@company.com",
+    "quantityField": "Quantity",
+    "notesPlaceholder": "Colours, sizes, delivery date…",
+    "estimatedTotal": "Estimated total:",
+    "calculationBreakdown": "(${{unitPrice}} × {{qty}})",
+    "sendInvoice": "Send PayPal invoice",
+    "sending": "Sending…",
+    "invoiceSentTitle": "Invoice {{id}} sent",
+    "invoiceSentSubtitle": "Total ${{total}} via PayPal Invoicing"
+  },
+  "ledger": {
+    "usdReceived": "USD received (PayPal)",
+    "inrWithdrawn": "INR withdrawn to bank",
+    "fxRate": "FX rate",
+    "flowSummary": "PayPal USD → SBI Federation a/c → UPI to makers",
+    "simulateSettlement": "Simulate Instant UPI Settlement",
+    "nothingPending": "Nothing pending to settle",
+    "upiSettledToast_one": "{{count}} UPI payout settled instantly",
+    "upiSettledToast_other": "{{count}} UPI payouts settled instantly",
+    "table": {
+      "item": "Item",
+      "usdReceived": "USD Received",
+      "inrWithdrawn": "INR Withdrawn",
+      "maker": "Maker",
+      "share": "Share",
+      "status": "Status",
+      "empty": "No payments yet. Sales from the storefront will appear here."
+    },
+    "upiCredited": "UPI credited",
+    "nothingPendingLog": "nothing pending"
+  },
+  "assistant": {
+    "title": "Didi Assistant",
+    "toggleAria": "Assistant",
+    "initialMessage": "Hi! Ask me about any piece. I can't change prices.",
+    "inputPlaceholder": "Ask about the throw…",
+    "sendAria": "Send",
+    "responses": {
+      "discount": "Prices are set by a fixed fair-wage formula, so I can't change them. For bulk orders, try “Request Custom Invoice”.",
+      "productDetail": "{{title}}: {{description}} Made by {{maker}} in about {{hours}} hours. Price: ${{price}} (fixed).",
+      "shipping": "We ship worldwide from India, usually in 7–12 days.",
+      "care": "Hand-wash cold with mild soap and dry in shade to keep natural dyes bright.",
+      "fallback": "Ask me about any product, materials, care or shipping."
+    }
+  },
+  "errors": {
+    "micBlocked": "Microphone blocked or not available.",
+    "invalidPricing": "Invalid pricing details provided."
+  },
+  "language": {
+    "switcherLabel": "Language",
+    "searchPlaceholder": "Search languages…",
+    "tier1": "Indian Languages",
+    "tier2": "Global Buyer Languages",
+    "tier3": "All Other Languages",
+    "machineTranslated": "Machine translated",
+    "current": "Current language"
+  }
+}
