@@ -1,0 +1,158 @@
+{
+  "brand": {
+    "name": "दीदी डायरेक्ट",
+    "prefix": "दीदी",
+    "suffix": "डायरेक्ट",
+    "tagline": "भारतीय महिला कारीगरों द्वारा हस्तनिर्मित, विश्वभर में बिक्री।",
+    "metaDescription": "महिला कारीगर समूहों के लिए वॉइस-फर्स्ट लिस्टिंग, निष्पक्ष पारदर्शी मूल्य निर्धारण, पेपैल चेकआउट और त्वरित यूपीआई भुगतान।"
+  },
+  "roles": {
+    "artisan": "कारीगर आवाज़ (बोलो)",
+    "leader": "लीडर समीक्षा",
+    "buyer": "खरीदार बाज़ार",
+    "ledger": "फेडरेशन बहीखाता"
+  },
+  "status": {
+    "Pending_Review": "समीक्षाधीन",
+    "Live": "लाइव",
+    "Sold": "बिक चुका",
+    "Pending": "लंबित",
+    "Settled": "निपटाया गया"
+  },
+  "common": {
+    "resetDemoData": "डेमो डेटा रीसेट करें",
+    "resetConfirm": "क्या आप सारा डेमो डेटा रीसेट करना चाहते हैं?",
+    "close": "बंद करें",
+    "cancel": "रद्द करें",
+    "save": "सहेजें",
+    "submit": "जमा करें",
+    "loading": "लोड हो रहा है…",
+    "retry": "पुनः प्रयास करें",
+    "goHome": "होम पेज पर जाएं",
+    "pageNotFound": "पृष्ठ नहीं मिला",
+    "pageNotFoundDesc": "आप जिस पृष्ठ की तलाश कर रहे हैं वह मौजूद नहीं है या स्थानांतरित कर दिया गया है।",
+    "pageError": "यह पृष्ठ लोड नहीं हो सका",
+    "pageErrorDesc": "हमारी ओर से कुछ त्रुटि हुई। आप रीफ़्रेश करने का प्रयास कर सकते हैं या होम पेज पर जा सकते हैं।"
+  },
+  "artisan": {
+    "howItWorksTitle": "यह कैसे काम करता है",
+    "steps": {
+      "step1Title": "आवाज़ में बताएं",
+      "step1Desc": "फोटो लें और अपने सामान के बारे में खुलकर बोलें।",
+      "step2Title": "एआई बनाएगा विवरण और डॉलर मूल्य",
+      "step2Desc": "अंग्रेज़ी लिस्टिंग और उचित मज़दूरी वाला डॉलर मूल्य।",
+      "step3Title": "लीडर मंज़ूरी",
+      "step3Desc": "आपकी समूह लीडर जांच कर प्रकाशित करेंगी।"
+    },
+    "greeting": "नमस्ते, कमला दीदी",
+    "newListingTitle": "नया सामान बेचें",
+    "instruction": "फोटो खींचें, फिर बोलकर बताएं।",
+    "photoUploadAlt": "कारीगरी की फोटो",
+    "changePhoto": "बदलें",
+    "takePhoto": "फोटो",
+    "bolo": "बोलो",
+    "listening": "सुन रहे हैं…",
+    "processing": "हिंदी समझ रहे हैं…",
+    "stop": "रुको (Stop)",
+    "voiceNotSupported": "इस भाषा के लिए आपके ब्राउज़र में आवाज़ पहचान उपलब्ध नहीं है। कृपया नीचे लिखकर विवरण दें।",
+    "typeFallbackPlaceholder": "जैसे: हाथ से बना लाल रेशमी दुपट्टा, 6 घंटे लगे, सामग्री ₹300...",
+    "continueWithText": "लिखित विवरण के साथ आगे बढ़ें",
+    "sentSuccessTitle": "लीडर के पास भेज दिया!",
+    "sentSuccessSubtitle": "समीक्षा के लिए भेजा गया।",
+    "createAnother": "और बनाएं",
+    "draftQuote": "“{{transcript}}”",
+    "itemSummary": "₹{{materials}} सामग्री · {{hours}} घंटे · {{craft}}",
+    "materialsCost": "₹{{materials}} सामग्री",
+    "hoursSpent": "{{hours}} घंटे",
+    "guessedNotice": "कीमत या घंटे स्पष्ट सुनाई नहीं दिए, अंदाज़ा लगाया गया। लीडर बदल सकती हैं।",
+    "speakAgain": "दोबारा बोलें",
+    "submitToLeader": "भेजें (Submit)",
+    "recentMemosTitle": "हाल के वॉइस मेमो",
+    "noMemos": "अभी कोई मेमो नहीं। \"बोलो\" दबाकर शुरू करें।",
+    "micError": "माइक बंद है। ब्राउज़र में माइक अनुमति दें, या ऐप को नए टैब में खोलें। अभी डेमो आवाज़ चल रही है।"
+  },
+  "leader": {
+    "queueClear": "समीक्षा कतार खाली है।",
+    "deterministicPriceTitle": "पारदर्शी मूल्य निर्धारण",
+    "publish": "प्रकाशित करें",
+    "edit": "बदलें",
+    "reject": "अस्वीकार करें",
+    "formulaLabel": "(₹{{materials}} + {{hours}}h × ₹{{wageFloor}}) ÷ (1 − {{margin}}) × {{fx}}",
+    "usdBadge": "USD",
+    "editModalTitle": "मूल्य निर्धारण संपादित करें",
+    "titleField": "शीर्षक",
+    "materialsField": "सामग्री लागत ₹",
+    "hoursField": "घंटे",
+    "marginField": "मार्जिन (0–0.99)",
+    "marginError": "मार्जिन 0 और 0.99 के बीच होना चाहिए।",
+    "savePrice": "मूल्य सहेजें"
+  },
+  "storefront": {
+    "headline": "कारीगर के हाथों से सीधे आप तक।",
+    "subheadline": "हर खरीदारी से भारत की एक महिला कारीगर को मिनटों में भुगतान मिलता है।",
+    "emptyState": "अभी कोई उत्पाद लाइव नहीं है। प्रकाशित वस्तुएं यहां दिखाई देंगी।",
+    "byMaker": "निर्माता: {{maker}} · {{collective}}",
+    "payWithPayPal": "पेपैल से भुगतान करें",
+    "payPalCheckout": "PayPal Checkout",
+    "requestInvoice": "कस्टम इनवॉइस का अनुरोध करें",
+    "paidToast": "भुगतान सफल · {{orderId}}",
+    "customInvoiceTitle": "कस्टम इनवॉइस",
+    "emailPlaceholder": "buyer@company.com",
+    "quantityField": "मात्रा",
+    "notesPlaceholder": "रंग, आकार, डिलीवरी की तारीख…",
+    "estimatedTotal": "अनुमानित कुल:",
+    "calculationBreakdown": "(${{unitPrice}} × {{qty}})",
+    "sendInvoice": "पेपैल इनवॉइस भेजें",
+    "sending": "भेजा जा रहा है…",
+    "invoiceSentTitle": "इनवॉइस {{id}} भेजा गया",
+    "invoiceSentSubtitle": "कुल ${{total}} पेपैल इनवॉइसिंग द्वारा"
+  },
+  "ledger": {
+    "usdReceived": "प्राप्त अमेरिकी डॉलर (PayPal)",
+    "inrWithdrawn": "बैंक में अंतरित भारतीय रुपये",
+    "fxRate": "विनिमय दर",
+    "flowSummary": "PayPal USD → SBI फेडरेशन खाता → कारीगरों को UPI",
+    "simulateSettlement": "त्वरित UPI निपटान का परीक्षण करें",
+    "nothingPending": "निपटान के लिए कुछ भी लंबित नहीं है",
+    "upiSettledToast_one": "{{count}} UPI भुगतान का त्वरित निपटान हुआ",
+    "upiSettledToast_other": "{{count}} UPI भुगतानों का त्वरित निपटान हुआ",
+    "table": {
+      "item": "वस्तु",
+      "usdReceived": "प्राप्त USD",
+      "inrWithdrawn": "अंतरित INR",
+      "maker": "कारीगर",
+      "share": "हिस्सा",
+      "status": "स्थिति",
+      "empty": "अभी कोई भुगतान नहीं हुआ है। बाज़ार से बिक्री यहां दिखाई देगी।"
+    },
+    "upiCredited": "UPI जमा हुआ",
+    "nothingPendingLog": "कुछ भी लंबित नहीं"
+  },
+  "assistant": {
+    "title": "दीदी सहायक",
+    "toggleAria": "सहायक",
+    "initialMessage": "नमस्ते! किसी भी वस्तु के बारे में पूछें। कीमतें तय हैं और बदली नहीं जा सकतीं।",
+    "inputPlaceholder": "सामान के बारे में पूछें…",
+    "sendAria": "भेजें",
+    "responses": {
+      "discount": "कीमतें एक निश्चित पारदर्शी मज़दूरी सूत्र द्वारा तय की जाती हैं, इसलिए मैं उन्हें बदल नहीं सकती। थोक ऑर्डर के लिए “कस्टम इनवॉइस का अनुरोध करें” आज़माएं।",
+      "productDetail": "{{title}}: {{description}} {{maker}} द्वारा लगभग {{hours}} घंटों में निर्मित। मूल्य: ${{price}} (स्थिर)।",
+      "shipping": "हम भारत से दुनिया भर में शिप करते हैं, आमतौर पर 7–12 दिनों में पहुंचता है।",
+      "care": "प्राकृतिक रंगों को चमकीला रखने के लिए हल्के साबुन से ठंडे पानी में हाथ से धोएं और छांव में सुखाएं।",
+      "fallback": "मुझसे किसी भी वस्तु, सामग्री, देखभाल या शिपिंग के बारे में पूछें।"
+    }
+  },
+  "errors": {
+    "micBlocked": "माइक्रोफ़ोन अवरुद्ध है या उपलब्ध नहीं है।",
+    "invalidPricing": "अमान्य मूल्य निर्धारण विवरण।"
+  },
+  "language": {
+    "switcherLabel": "भाषा",
+    "searchPlaceholder": "भाषा खोजें…",
+    "tier1": "भारतीय भाषाएं",
+    "tier2": "वैश्विक खरीदार भाषाएं",
+    "tier3": "अन्य भाषाएं",
+    "machineTranslated": "मशीनी अनुवाद",
+    "current": "वर्तमान भाषा"
+  }
+}
