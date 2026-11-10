@@ -1,0 +1,158 @@
+{
+  "brand": {
+    "name": "Didi Direct",
+    "prefix": "Didi",
+    "suffix": "Direct",
+    "tagline": "बड़ो: भारतीय महिला कारीगरों द्वारा हस्तनिर्मित, विश्वभर में बिक्री।",
+    "metaDescription": "Voice-first listings, fair deterministic pricing, PayPal checkout and instant UPI payouts for women artisan collectives."
+  },
+  "roles": {
+    "artisan": "कारीगर आवाज़ (बड़ो)",
+    "leader": "लीडर समीक्षा",
+    "buyer": "खरीदार बाज़ार",
+    "ledger": "फेडरेशन बहीखाता"
+  },
+  "status": {
+    "Pending_Review": "समीक्षाधीन",
+    "Live": "लाइव",
+    "Sold": "बिक चुका",
+    "Pending": "लंबित",
+    "Settled": "निपटाया गया"
+  },
+  "common": {
+    "resetDemoData": "डेमो डेटा रीसेट करें",
+    "resetConfirm": "क्या आप सारा डेटा रीसेट करना चाहते हैं?",
+    "close": "बंद करें",
+    "cancel": "रद्द करें",
+    "save": "सहेजें",
+    "submit": "जमा करें",
+    "loading": "लोड हो रहा है…",
+    "retry": "पुनः प्रयास करें",
+    "goHome": "होम पेज पर जाएं",
+    "pageNotFound": "पृष्ठ नहीं मिला",
+    "pageNotFoundDesc": "आप जिस पृष्ठ की तलाश कर रहे हैं वह मौजूद नहीं है।",
+    "pageError": "यह पृष्ठ लोड नहीं हो सका",
+    "pageErrorDesc": "कुछ त्रुटि हुई। कृपया पुनः प्रयास करें।"
+  },
+  "artisan": {
+    "howItWorksTitle": "यह कैसे काम करता है",
+    "steps": {
+      "step1Title": "आवाज़ में बताएं",
+      "step1Desc": "फोटो लें और अपने सामान के बारे में खुलकर बोलें।",
+      "step2Title": "एआई बनाएगा विवरण और डॉलर मूल्य",
+      "step2Desc": "अंग्रेज़ी लिस्टिंग और उचित मज़दूरी वाला डॉलर मूल्य।",
+      "step3Title": "लीडर मंज़ूरी",
+      "step3Desc": "आपकी समूह लीडर जांच कर प्रकाशित करेंगी।"
+    },
+    "greeting": "नमस्ते, कमला दीदी",
+    "newListingTitle": "नया सामान बेचें",
+    "instruction": "फोटो खींचें, फिर बोलकर बताएं।",
+    "photoUploadAlt": "कारीगरी की फोटो",
+    "changePhoto": "बदलें",
+    "takePhoto": "फोटो",
+    "bolo": "बोलो",
+    "listening": "सुन रहे हैं…",
+    "processing": "समझ रहे हैं…",
+    "stop": "रुको (Stop)",
+    "voiceNotSupported": "इस भाषा के लिए ब्राउज़र में आवाज़ पहचान उपलब्ध नहीं है। कृपया नीचे लिखकर विवरण दें।",
+    "typeFallbackPlaceholder": "जैसे: हाथ से बना दुपट्टा, 6 घंटे लगे, सामग्री ₹300...",
+    "continueWithText": "लिखित विवरण के साथ आगे बढ़ें",
+    "sentSuccessTitle": "लीडर के पास भेज दिया!",
+    "sentSuccessSubtitle": "समीक्षा के लिए भेजा गया।",
+    "createAnother": "और बनाएं",
+    "draftQuote": "“{{transcript}}”",
+    "itemSummary": "₹{{materials}} materials · {{hours}} hrs · {{craft}}",
+    "materialsCost": "₹{{materials}} materials",
+    "hoursSpent": "{{hours}} hrs",
+    "guessedNotice": "कीमत या घंटे स्पष्ट सुनाई नहीं दिए, अंदाज़ा लगाया गया। लीडर बदल सकती हैं।",
+    "speakAgain": "दोबारा बोलें",
+    "submitToLeader": "भेजें (Submit)",
+    "recentMemosTitle": "हाल के वॉइस मेमो",
+    "noMemos": "अभी कोई मेमो नहीं। शुरू करने के लिए बोलें।",
+    "micError": "माइक उपलब्ध नहीं है। कृपया अनुमति दें।"
+  },
+  "leader": {
+    "queueClear": "समीक्षा कतार खाली है।",
+    "deterministicPriceTitle": "पारदर्शी मूल्य निर्धारण",
+    "publish": "प्रकाशित करें",
+    "edit": "बदलें",
+    "reject": "अस्वीकार करें",
+    "formulaLabel": "(₹{{materials}} + {{hours}}h × ₹{{wageFloor}}) ÷ (1 − {{margin}}) × {{fx}}",
+    "usdBadge": "USD",
+    "editModalTitle": "मूल्य संपादन",
+    "titleField": "शीर्षक",
+    "materialsField": "सामग्री ₹",
+    "hoursField": "घंटे",
+    "marginField": "मार्जिन (0–0.99)",
+    "marginError": "Margin must be between 0 and 0.99.",
+    "savePrice": "मूल्य सहेजें"
+  },
+  "storefront": {
+    "headline": "कारीगर के हाथों से सीधे आप तक।",
+    "subheadline": "हर खरीदारी से भारत की एक महिला कारीगर को मिनटों में भुगतान मिलता है।",
+    "emptyState": "अभी कोई उत्पाद लाइव नहीं है।",
+    "byMaker": "By {{maker}} · {{collective}}",
+    "payWithPayPal": "Pay with PayPal",
+    "payPalCheckout": "PayPal Checkout",
+    "requestInvoice": "कस्टम इनवॉइस मांगें",
+    "paidToast": "Paid · {{orderId}}",
+    "customInvoiceTitle": "कस्टम इनवॉइस",
+    "emailPlaceholder": "buyer@company.com",
+    "quantityField": "मात्रा",
+    "notesPlaceholder": "Colours, sizes, delivery date…",
+    "estimatedTotal": "अनुमानित कुल:",
+    "calculationBreakdown": "(${{unitPrice}} × {{qty}})",
+    "sendInvoice": "पेपैल इनवॉइस भेजें",
+    "sending": "भेजा जा रहा है…",
+    "invoiceSentTitle": "Invoice {{id}} sent",
+    "invoiceSentSubtitle": "Total ${{total}} via PayPal Invoicing"
+  },
+  "ledger": {
+    "usdReceived": "प्राप्त USD (PayPal)",
+    "inrWithdrawn": "अंतरित INR",
+    "fxRate": "विनिमय दर FX",
+    "flowSummary": "PayPal USD → SBI Federation a/c → UPI to makers",
+    "simulateSettlement": "त्वरित UPI निपटान का परीक्षण",
+    "nothingPending": "निपटान के लिए कुछ लंबित नहीं",
+    "upiSettledToast_one": "{{count}} UPI payout settled instantly",
+    "upiSettledToast_other": "{{count}} UPI payouts settled instantly",
+    "table": {
+      "item": "वस्तु",
+      "usdReceived": "प्राप्त USD",
+      "inrWithdrawn": "अंतरित INR",
+      "maker": "कारीगर",
+      "share": "हिस्सा",
+      "status": "स्थिति",
+      "empty": "अभी कोई भुगतान नहीं।"
+    },
+    "upiCredited": "UPI credited",
+    "nothingPendingLog": "nothing pending"
+  },
+  "assistant": {
+    "title": "Didi Assistant",
+    "toggleAria": "Assistant",
+    "initialMessage": "नमस्ते! किसी भी वस्तु के बारे में पूछें। कीमतें तय हैं और बदली नहीं जा सकतीं।",
+    "inputPlaceholder": "Ask about the throw…",
+    "sendAria": "Send",
+    "responses": {
+      "discount": "Prices are set by a fixed fair-wage formula, so I can't change them. For bulk orders, try “Request Custom Invoice”.",
+      "productDetail": "{{title}}: {{description}} Made by {{maker}} in about {{hours}} hours. Price: ${{price}} (fixed).",
+      "shipping": "We ship worldwide from India, usually in 7–12 days.",
+      "care": "Hand-wash cold with mild soap and dry in shade to keep natural dyes bright.",
+      "fallback": "Ask me about any product, materials, care or shipping."
+    }
+  },
+  "errors": {
+    "micBlocked": "माइक ब्लॉक है।",
+    "invalidPricing": "अमान्य मूल्य विवरण।"
+  },
+  "language": {
+    "switcherLabel": "भाषा",
+    "searchPlaceholder": "भाषा खोजें…",
+    "tier1": "भारतीय भाषाएं",
+    "tier2": "वैश्विक भाषाएं",
+    "tier3": "अन्य भाषाएं",
+    "machineTranslated": "मशीनी अनुवाद",
+    "current": "वर्तमान भाषा"
+  }
+}
