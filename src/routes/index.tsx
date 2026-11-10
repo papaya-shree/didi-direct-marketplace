@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Mic, ClipboardCheck, Store, Landmark, RotateCcw } from "lucide-react";
 
 const STORE_KEY = "didi-direct-state-v1";
@@ -9,6 +10,7 @@ import { ArtisanVoice } from "@/components/didi/ArtisanVoice";
 import { LeaderReview } from "@/components/didi/LeaderReview";
 import { BuyerStorefront } from "@/components/didi/BuyerStorefront";
 import { FederationLedger } from "@/components/didi/FederationLedger";
+import { LanguageSwitcher } from "@/components/didi/LanguageSwitcher";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -24,18 +26,22 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const tabs = [
-  { id: "artisan", label: "Artisan Voice", icon: Mic },
-  { id: "leader", label: "Leader Review", icon: ClipboardCheck },
-  { id: "buyer", label: "Buyer Storefront", icon: Store },
-  { id: "ledger", label: "Federation Ledger", icon: Landmark },
-] as const;
+type TabId = "artisan" | "leader" | "buyer" | "ledger";
 
 function Index() {
-  const [tab, setTab] = useState<(typeof tabs)[number]["id"]>("artisan");
+  const { t } = useTranslation();
+  const [tab, setTab] = useState<TabId>("artisan");
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [settlements, setSettlements] = useState<Settlement[]>(initialSettlements);
   const [loaded, setLoaded] = useState(false);
+
+  const tabs: { id: TabId; label: string; icon: typeof Mic }[] = [
+    { id: "artisan", label: t("roles.artisan"), icon: Mic },
+    { id: "leader", label: t("roles.leader"), icon: ClipboardCheck },
+    { id: "buyer", label: t("roles.buyer"), icon: Store },
+    { id: "ledger", label: t("roles.ledger"), icon: Landmark },
+  ];
+
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORE_KEY);
@@ -47,11 +53,13 @@ function Index() {
     } catch { /* ignore corrupt data */ }
     setLoaded(true);
   }, []);
+
   useEffect(() => {
     if (loaded) localStorage.setItem(STORE_KEY, JSON.stringify({ products, settlements }));
   }, [loaded, products, settlements]);
+
   const resetDemo = () => {
-    if (!confirm("Reset all demo data?")) return;
+    if (!confirm(t("common.resetConfirm"))) return;
     localStorage.removeItem(STORE_KEY);
     setProducts(initialProducts);
     setSettlements(initialSettlements);
@@ -68,15 +76,40 @@ function Index() {
     <div className="min-h-screen bg-background font-sans text-foreground">
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-card">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3 md:flex-row md:items-center md:justify-between">
-          <p className="font-display text-xl text-foreground">Didi<span className="text-terracotta">.</span>Direct</p>
-          <nav className="flex gap-1 overflow-x-auto rounded-lg border border-slate-200 p-1">
-            {tabs.map(({ id, label, icon: Icon }) => (
-              <button key={id} onClick={() => setTab(id)} className={`flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-semibold ${tab === id ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"}`}>
-                <Icon className="h-4 w-4" />{label}
-                {id === "leader" && pending > 0 && <span className="rounded-full bg-terracotta px-1.5 text-xs text-primary-foreground">{pending}</span>}
-              </button>
-            ))}
-          </nav>
+          <div className="flex items-center justify-between gap-4">
+            <p className="font-display text-xl text-foreground">
+              {t("brand.prefix")}<span className="text-terracotta">.</span>{t("brand.suffix")}
+            </p>
+            <div className="md:hidden">
+              <LanguageSwitcher />
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <nav className="flex gap-1 overflow-x-auto rounded-lg border border-slate-200 p-1">
+              {tabs.map(({ id, label, icon: Icon }) => (
+                <button
+                  key={id}
+                  onClick={() => setTab(id)}
+                  className={`flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-semibold transition-colors ${
+                    tab === id
+                      ? "bg-foreground text-background"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span>{label}</span>
+                  {id === "leader" && pending > 0 && (
+                    <span className="rounded-full bg-terracotta px-1.5 text-xs text-primary-foreground">
+                      {pending}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </nav>
+            <div className="hidden md:block">
+              <LanguageSwitcher />
+            </div>
+          </div>
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-4 py-8">
@@ -87,7 +120,7 @@ function Index() {
       </main>
       <footer className="mx-auto flex max-w-6xl justify-end px-4 pb-8">
         <button onClick={resetDemo} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
-          <RotateCcw className="h-3 w-3" />Reset Demo Data
+          <RotateCcw className="h-3 w-3" />{t("common.resetDemoData")}
         </button>
       </footer>
     </div>

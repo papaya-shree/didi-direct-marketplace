@@ -1,20 +1,49 @@
-import { useRef, useState } from "react";
-import { Camera, Mic, Loader2, CheckCircle2, Send, AudioLines, Sparkles, ShieldCheck } from "lucide-react";
+import { useRef, useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import { Camera, Mic, Loader2, CheckCircle2, Send, AudioLines, Sparkles, ShieldCheck, AlertCircle } from "lucide-react";
 import type { Product } from "@/lib/data";
 import { extractNumbers } from "@/lib/extract";
+import { LANGUAGES } from "@/i18n/languages";
+import { formatTime } from "@/lib/formatters";
 
 async function shrink(f: File): Promise<string> {
-  const b = await createImageBitmap(f); const k = Math.min(1, 640 / Math.max(b.width, b.height));
-  const c = document.createElement("canvas"); c.width = b.width * k; c.height = b.height * k;
-  c.getContext("2d")!.drawImage(b, 0, 0, c.width, c.height); return c.toDataURL("image/jpeg", 0.8);
+  const b = await createImageBitmap(f);
+  const k = Math.min(1, 640 / Math.max(b.width, b.height));
+  const c = document.createElement("canvas");
+  c.width = b.width * k;
+  c.height = b.height * k;
+  c.getContext("2d")!.drawImage(b, 0, 0, c.width, c.height);
+  return c.toDataURL("image/jpeg", 0.8);
 }
 
 type Memo = { title: string; transcript: string; at: string; secs: number };
 const sampleMemos: Memo[] = [];
 
-type Draft = { title: string; titleHi: string; description: string; craft: string; materials: number; hours: number; transcript: string; guessed: boolean };
+type Draft = {
+  title: string;
+  titleHi: string;
+  description: string;
+  craft: string;
+  materials: number;
+  hours: number;
+  transcript: string;
+  guessed: boolean;
+};
 
 export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language || "en";
+
+  const langInfo = useMemo(() => {
+    return (
+      LANGUAGES.find((l) => l.code === currentLang) ||
+      LANGUAGES.find((l) => l.code === currentLang.split("-")[0]) ||
+      LANGUAGES[0]
+    );
+  }, [currentLang]);
+
+  const speechSupported = typeof window !== "undefined" && Boolean(langInfo.speechCode);
+
   const [photo, setPhoto] = useState<string | null>(null);
   const [stage, setStage] = useState<"idle" | "recording" | "processing" | "done">("idle");
   const [draft, setDraft] = useState<Draft | null>(null);
@@ -22,20 +51,45 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
   const [fileName, setFileName] = useState("");
   const elapsedRef = useRef(0);
   const [memos, setMemos] = useState<Memo[]>(sampleMemos);
+  const [textFallback, setTextFallback] = useState("");
+  const [showTextInput, setShowTextInput] = useState(!speechSupported);
 
   const [error, setError] = useState<string | null>(null);
   const stopRef = useRef<(() => void) | null>(null);
 
   const finish = async (spoken: string) => {
     setStage("processing");
-    const res = await fetch("/api/voice-listing", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ transcript: spoken, image: photo, filename: fileName }) });
-    const json = await res.json();
-    const transcript: string = json.draft.transcript;
-    const n = extractNumbers(transcript);
-    const nd: Draft = { ...json.draft, transcript, materials: n.materials ?? 200, hours: n.hours ?? 4, guessed: n.materials === null || n.hours === null };
-    setDraft(nd);
-    setMemos((m) => [{ title: nd.title, transcript: nd.transcript, at: new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }), secs: Math.max(3, Math.round(elapsedRef.current)) }, ...m].slice(0, 5));
-    setStage("done");
+    try {
+      const res = await fetch("/api/voice-listing", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ transcript: spoken, image: photo, filename: fileName }),
+      });
+      const json = await res.json();
+      const transcript: string = json.draft.transcript;
+      const n = extractNumbers(transcript);
+      const nd: Draft = {
+        ...json.draft,
+        transcript,
+        materials: n.materials ?? 200,
+        hours: n.hours ?? 4,
+        guessed: n.materials === null || n.hours === null,
+      };
+      setDraft(nd);
+      setMemos((m) => [
+        {
+          title: nd.title,
+          transcript: nd.transcript,
+          at: formatTime(new Date(), currentLang),
+          secs: Math.max(3, Math.round(elapsedRef.current)),
+        },
+        ...m,
+      ].slice(0, 5));
+    } catch {
+      setError(t("errors.invalidPricing"));
+    } finally {
+      setStage("done");
+    }
   };
 
   const [elapsed, setElapsed] = useState(0);
@@ -44,15 +98,26 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
   const MAX = 15;
 
   const record = async () => {
-    if (stage === "recording") { stopRef.current?.(); return; }
+    if (!langInfo.speechCode) {
+      setShowTextInput(true);
+      return;
+    }
+
+    if (stage === "recording") {
+      stopRef.current?.();
+      return;
+    }
     if (stage === "processing") return;
-    setDraft(null); setElapsed(0); setError(null); setLive("");
+    setDraft(null);
+    setElapsed(0);
+    setError(null);
+    setLive("");
 
     let stream: MediaStream | null = null;
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch {
-      setError("Mic band hai. Browser mein mic allow karein, ya app ko naye tab mein kholein. Abhi demo awaaz chal rahi hai.");
+      setError(t("artisan.micError"));
     }
 
     setStage("recording");
@@ -60,14 +125,20 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
     let text = "";
     let ended = false;
 
-    // Real audio level for the waveform
-    let ctx: AudioContext | null = null; let raf = 0;
+    // Real audio level for waveform
+    let ctx: AudioContext | null = null;
+    let raf = 0;
     if (stream) {
       ctx = new AudioContext();
-      const an = ctx.createAnalyser(); an.fftSize = 256;
+      const an = ctx.createAnalyser();
+      an.fftSize = 256;
       ctx.createMediaStreamSource(stream).connect(an);
       const buf = new Uint8Array(an.frequencyBinCount);
-      const tick = () => { an.getByteFrequencyData(buf); setLevel(buf.reduce((a, b) => a + b, 0) / buf.length / 128); raf = requestAnimationFrame(tick); };
+      const tick = () => {
+        an.getByteFrequencyData(buf);
+        setLevel(buf.reduce((a, b) => a + b, 0) / buf.length / 128);
+        raf = requestAnimationFrame(tick);
+      };
       tick();
     }
 
@@ -76,123 +147,326 @@ export function ArtisanVoice({ onSubmit }: { onSubmit: (p: Product) => void }) {
     const rec = SR ? new SR() : null;
 
     const end = () => {
-      if (ended) return; ended = true;
-      clearInterval(iv); clearTimeout(cap); cancelAnimationFrame(raf);
-      stream?.getTracks().forEach((t) => t.stop()); void ctx?.close();
-      try { rec?.stop(); } catch { /* already stopped */ }
-      stopRef.current = null; setLevel(0);
+      if (ended) return;
+      ended = true;
+      clearInterval(iv);
+      clearTimeout(cap);
+      cancelAnimationFrame(raf);
+      stream?.getTracks().forEach((t) => t.stop());
+      void ctx?.close();
+      try {
+        rec?.stop();
+      } catch {
+        /* already stopped */
+      }
+      stopRef.current = null;
+      setLevel(0);
       void finish(text.trim());
     };
-    const iv = setInterval(() => (elapsedRef.current = (Date.now() - start) / 1000, setElapsed(elapsedRef.current)), 100);
+
+    const iv = setInterval(() => {
+      elapsedRef.current = (Date.now() - start) / 1000;
+      setElapsed(elapsedRef.current);
+    }, 100);
     const cap = setTimeout(end, (stream ? MAX : 3) * 1000);
     stopRef.current = end;
 
     if (rec) {
-      rec.lang = "hi-IN"; rec.continuous = true; rec.interimResults = true;
-      rec.onresult = (e: any) => { text = Array.from(e.results as ArrayLike<any>).map((r: any) => r[0].transcript).join(" "); setLive(text); };
+      rec.lang = langInfo.speechCode;
+      rec.continuous = true;
+      rec.interimResults = true;
+      rec.onresult = (e: any) => {
+        text = Array.from(e.results as ArrayLike<any>)
+          .map((r: any) => r[0].transcript)
+          .join(" ");
+        setLive(text);
+      };
       rec.onerror = () => {};
-      try { rec.start(); } catch { /* ignore */ }
+      try {
+        rec.start();
+      } catch {
+        /* ignore */
+      }
     }
+  };
+
+  const handleTextSubmit = () => {
+    if (!textFallback.trim()) return;
+    elapsedRef.current = 4;
+    void finish(textFallback.trim());
   };
 
   const submit = () => {
     if (!draft) return;
-    onSubmit({ id: `p${Date.now()}`, title: draft.title, titleHi: draft.titleHi, description: draft.description, craft: draft.craft, collectiveId: "c1", maker: "Kamla Devi", materials: draft.materials, hours: draft.hours, margin: 0.25, status: "Pending_Review", image: photo ?? "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=600&q=70&auto=format&fit=crop" });
+    onSubmit({
+      id: `p${Date.now()}`,
+      title: draft.title,
+      titleHi: draft.titleHi,
+      description: draft.description,
+      craft: draft.craft,
+      collectiveId: "c1",
+      maker: "Kamla Devi",
+      materials: draft.materials,
+      hours: draft.hours,
+      margin: 0.25,
+      status: "Pending_Review",
+      image: photo ?? "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=600&q=70&auto=format&fit=crop",
+    });
     setSent(true);
   };
 
-  const reset = () => { setPhoto(null); setDraft(null); setStage("idle"); setSent(false); };
+  const reset = () => {
+    setPhoto(null);
+    setDraft(null);
+    setStage("idle");
+    setSent(false);
+    setTextFallback("");
+  };
 
   return (
     <div className="grid items-start gap-6 lg:grid-cols-[1fr_24rem_1fr]">
-    <aside className="hidden rounded-xl border border-slate-200 bg-card p-6 lg:block">
-      <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Kaise kaam karta hai</p>
-      <ol className="mt-4 space-y-5">
-        {[
-          { icon: Mic, t: "Speak in Hindi", s: "Photo lein aur apne saman ke baare mein bolein." },
-          { icon: Sparkles, t: "AI creates story & USD price", s: "English listing and a fair-wage dollar price." },
-          { icon: ShieldCheck, t: "Leader approves", s: "Your collective leader checks it and publishes." },
-        ].map(({ icon: Icon, t, s }, i) => (
-          <li key={t} className="flex gap-3">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">{i + 1}</span>
-            <div><p className="flex items-center gap-1.5 font-semibold text-foreground"><Icon className="h-4 w-4 text-primary" />{t}</p><p className="text-sm text-muted-foreground">{s}</p></div>
-          </li>
-        ))}
-      </ol>
-    </aside>
-    <div className="mx-auto flex w-full max-w-sm flex-col overflow-hidden rounded-[2rem] border border-slate-300 bg-card shadow-md" style={{ minHeight: 640 }}>
-      <div className="flex-1 p-6">
-        <p className="text-xs uppercase tracking-widest text-muted-foreground">नमस्ते, कमला दीदी</p>
-        <h2 className="mt-1 font-display text-3xl text-foreground">नया सामान बेचें</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Photo khichein, phir bolkar batayein.</p>
-        {photo && <img src={photo} alt="Uploaded craft" className="mt-6 aspect-square w-full rounded-xl border border-slate-200 object-cover" />}
+      {/* Left How-It-Works Panel */}
+      <aside className="hidden rounded-xl border border-slate-200 bg-card p-6 lg:block">
+        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          {t("artisan.howItWorksTitle")}
+        </p>
+        <ol className="mt-4 space-y-5">
+          {[
+            {
+              icon: Mic,
+              t: t("artisan.steps.step1Title"),
+              s: t("artisan.steps.step1Desc"),
+            },
+            {
+              icon: Sparkles,
+              t: t("artisan.steps.step2Title"),
+              s: t("artisan.steps.step2Desc"),
+            },
+            {
+              icon: ShieldCheck,
+              t: t("artisan.steps.step3Title"),
+              s: t("artisan.steps.step3Desc"),
+            },
+          ].map(({ icon: Icon, t: stepTitle, s: stepDesc }, i) => (
+            <li key={stepTitle} className="flex gap-3">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
+                {i + 1}
+              </span>
+              <div>
+                <p className="flex items-center gap-1.5 font-semibold text-foreground">
+                  <Icon className="h-4 w-4 text-primary" />
+                  {stepTitle}
+                </p>
+                <p className="text-sm text-muted-foreground">{stepDesc}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </aside>
+
+      {/* Main Artisan Card */}
+      <div
+        className="mx-auto flex w-full max-w-sm flex-col overflow-hidden rounded-[2rem] border border-slate-300 bg-card shadow-md"
+        style={{ minHeight: 640 }}
+      >
+        <div className="flex-1 p-6">
+          <p className="text-xs uppercase tracking-widest text-muted-foreground">
+            {t("artisan.greeting")}
+          </p>
+          <h2 className="mt-1 font-display text-3xl text-foreground">
+            {t("artisan.newListingTitle")}
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t("artisan.instruction")}
+          </p>
+          {photo && (
+            <img
+              src={photo}
+              alt={t("artisan.photoUploadAlt")}
+              className="mt-6 aspect-square w-full rounded-xl border border-slate-200 object-cover"
+            />
+          )}
+        </div>
+
+        <div className="rounded-t-3xl border-t border-slate-200 bg-card p-6">
+          <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-slate-200" />
+          {sent ? (
+            <div className="py-6 text-center">
+              <CheckCircle2 className="mx-auto h-12 w-12 text-success" />
+              <p className="mt-3 font-semibold text-foreground">{t("artisan.sentSuccessTitle")}</p>
+              <p className="text-sm text-muted-foreground">{t("artisan.sentSuccessSubtitle")}</p>
+              <button
+                onClick={reset}
+                className="mt-4 text-sm font-semibold text-terracotta hover:underline"
+              >
+                {t("artisan.createAnother")}
+              </button>
+            </div>
+          ) : stage === "done" && draft ? (
+            <div className="space-y-3">
+              <p className="rounded-lg bg-muted p-3 text-sm italic">
+                {t("artisan.draftQuote", { transcript: draft.transcript })}
+              </p>
+              <div className="rounded-lg border border-slate-200 p-3 text-sm">
+                <p className="font-semibold text-foreground">{draft.title}</p>
+                <p className="text-muted-foreground">{draft.description}</p>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  {t("artisan.itemSummary", {
+                    materials: draft.materials,
+                    hours: draft.hours,
+                    craft: draft.craft,
+                  })}
+                </p>
+                {draft.guessed && (
+                  <p className="mt-1 text-xs text-terracotta">
+                    {t("artisan.guessedNotice")}
+                  </p>
+                )}
+              </div>
+              <button
+                onClick={record}
+                className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 py-3 font-semibold text-terracotta"
+              >
+                <Mic className="h-4 w-4" /> {t("artisan.speakAgain")}
+              </button>
+              <button
+                onClick={submit}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 font-semibold text-primary-foreground"
+              >
+                <Send className="h-4 w-4" /> {t("artisan.submitToLeader")}
+              </button>
+            </div>
+          ) : stage === "recording" || stage === "processing" ? (
+            <div className="py-4 text-center" aria-live="polite">
+              <div className="flex h-16 items-center justify-center gap-1">
+                {Array.from({ length: 24 }).map((_, i) => (
+                  <span
+                    key={i}
+                    className={`w-1.5 rounded-full bg-terracotta transition-all ${
+                      stage === "recording" ? "animate-wave" : "opacity-30"
+                    }`}
+                    style={{
+                      height: `${Math.min(100, (20 + ((i * 37) % 60)) * (0.5 + level * 1.5))}%`,
+                      animationDelay: `${(i % 8) * 0.09}s`,
+                    }}
+                  />
+                ))}
+              </div>
+              <p className="mt-3 font-mono text-2xl text-foreground">
+                0:{String(Math.floor(elapsed)).padStart(2, "0")}.{Math.floor((elapsed % 1) * 10)}
+              </p>
+              <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                {stage === "processing" ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    {t("artisan.processing")}
+                  </>
+                ) : (
+                  <>
+                    <span className="h-2 w-2 animate-pulse rounded-full bg-destructive" />
+                    {t("artisan.listening")}
+                  </>
+                )}
+              </p>
+              {live && <p className="mt-3 rounded-lg bg-muted p-2 text-sm">{live}</p>}
+              {error && <p className="mt-3 text-xs text-destructive">{error}</p>}
+              {stage === "recording" && (
+                <button
+                  onClick={record}
+                  className="mt-4 w-full rounded-xl bg-primary py-3 font-semibold text-primary-foreground"
+                >
+                  {t("artisan.stop")}
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {!langInfo.speechCode && (
+                <div className="flex items-start gap-2 rounded-lg bg-amber-500/10 p-2.5 text-start text-xs text-amber-700 dark:text-amber-300">
+                  <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                  <p>{t("artisan.voiceNotSupported")}</p>
+                </div>
+              )}
+
+              {showTextInput || !langInfo.speechCode ? (
+                <div className="space-y-2">
+                  <textarea
+                    value={textFallback}
+                    onChange={(e) => setTextFallback(e.target.value)}
+                    placeholder={t("artisan.typeFallbackPlaceholder")}
+                    rows={3}
+                    className="w-full rounded-xl border border-slate-200 bg-background p-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                  <button
+                    disabled={!textFallback.trim()}
+                    onClick={handleTextSubmit}
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+                  >
+                    <Send className="h-4 w-4" /> {t("artisan.continueWithText")}
+                  </button>
+                </div>
+              ) : null}
+
+              <div className="grid grid-cols-2 gap-3">
+                <label className="flex cursor-pointer flex-col items-center gap-2 rounded-2xl border border-slate-200 py-6 text-foreground hover:bg-muted/50 transition-colors">
+                  <Camera className="h-7 w-7" />
+                  <span className="text-sm font-semibold">
+                    {photo ? t("artisan.changePhoto") : t("artisan.takePhoto")}
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) {
+                        setFileName(f.name);
+                        void shrink(f).then(setPhoto);
+                      }
+                    }}
+                  />
+                </label>
+                <button
+                  onClick={record}
+                  className="flex flex-col items-center gap-2 rounded-2xl bg-terracotta py-6 text-primary-foreground hover:opacity-95 transition-opacity"
+                >
+                  <Mic className="h-7 w-7" />
+                  <span className="text-sm font-semibold">{t("artisan.bolo")}</span>
+                </button>
+              </div>
+
+              {error && <p className="text-center text-sm text-destructive">{error}</p>}
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="rounded-t-3xl border-t border-slate-200 bg-card p-6">
-        <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-slate-200" />
-        {sent ? (
-          <div className="py-6 text-center">
-            <CheckCircle2 className="mx-auto h-12 w-12 text-success" />
-            <p className="mt-3 font-semibold text-foreground">Leader ke paas bhej diya!</p>
-            <p className="text-sm text-muted-foreground">Sent for review.</p>
-            <button onClick={reset} className="mt-4 text-sm font-semibold text-terracotta">Aur banayein</button>
-          </div>
-        ) : stage === "done" && draft ? (
-          <div className="space-y-3">
-            <p className="rounded-lg bg-muted p-3 text-sm italic">“{draft.transcript}”</p>
-            <div className="rounded-lg border border-slate-200 p-3 text-sm">
-              <p className="font-semibold text-foreground">{draft.title}</p>
-              <p className="text-muted-foreground">{draft.description}</p>
-              <p className="mt-2 text-xs text-muted-foreground">₹{draft.materials} materials · {draft.hours} hrs · {draft.craft}</p>
-              {draft.guessed && <p className="text-xs text-terracotta">Kimat ya ghante sunai nahi diye, andaza lagaya. Leader badal sakti hain.</p>}
-            </div>
-            <button onClick={record} className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 py-3 font-semibold text-terracotta"><Mic className="h-4 w-4" /> Dobara bolein</button>
-            <button onClick={submit} className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 font-semibold text-primary-foreground"><Send className="h-4 w-4" /> Bhejein (Submit)</button>
-          </div>
-        ) : stage === "recording" || stage === "processing" ? (
-          <div className="py-4 text-center" aria-live="polite">
-            <div className="flex h-16 items-center justify-center gap-1">
-              {Array.from({ length: 24 }).map((_, i) => (
-                <span key={i} className={`w-1.5 rounded-full bg-terracotta transition-all ${stage === "recording" ? "animate-wave" : "opacity-30"}`} style={{ height: `${Math.min(100, (20 + ((i * 37) % 60)) * (0.5 + level * 1.5))}%`, animationDelay: `${(i % 8) * 0.09}s` }} />
-              ))}
-            </div>
-            <p className="mt-3 font-mono text-2xl text-foreground">0:{String(Math.floor(elapsed)).padStart(2, "0")}.{Math.floor((elapsed % 1) * 10)}</p>
-            <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-              {stage === "processing" ? <><Loader2 className="h-4 w-4 animate-spin" />Hindi samajh rahe hain…</> : <><span className="h-2 w-2 animate-pulse rounded-full bg-destructive" />Sun rahe hain…</>}
-            </p>
-            {live && <p className="mt-3 rounded-lg bg-muted p-2 text-sm">{live}</p>}
-            {error && <p className="mt-3 text-xs text-destructive">{error}</p>}
-            {stage === "recording" && <button onClick={record} className="mt-4 w-full rounded-xl bg-primary py-3 font-semibold text-primary-foreground">Ruko (Stop)</button>}
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-3">
-            <label className="flex cursor-pointer flex-col items-center gap-2 rounded-2xl border border-slate-200 py-6 text-foreground">
-              <Camera className="h-7 w-7" />
-              <span className="text-sm font-semibold">{photo ? "Badlein" : "Photo"}</span>
-              <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) { setFileName(f.name); void shrink(f).then(setPhoto); } }} />
-            </label>
-            <button onClick={record} className="flex flex-col items-center gap-2 rounded-2xl bg-terracotta py-6 text-primary-foreground">
-              <Mic className="h-7 w-7" />
-              <span className="text-sm font-semibold">Bolo</span>
-            </button>
-            {error && <p className="col-span-2 text-center text-sm text-destructive">{error}</p>}
-          </div>
+      {/* Right Voice Memos Sidebar */}
+      <aside className="hidden rounded-xl border border-slate-200 bg-card p-6 lg:block">
+        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          {t("artisan.recentMemosTitle")}
+        </p>
+        {memos.length === 0 && (
+          <p className="mt-4 text-sm text-muted-foreground">{t("artisan.noMemos")}</p>
         )}
-      </div>
-    </div>
-    <aside className="hidden rounded-xl border border-slate-200 bg-card p-6 lg:block">
-      <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Recent Voice Memos</p>
-      {memos.length === 0 && <p className="mt-4 text-sm text-muted-foreground">Abhi koi memo nahi. "Bolo" dabakar shuru karein.</p>}
-      <ul className="mt-4 divide-y divide-slate-200">
-        {memos.map((m, i) => (
-          <li key={i} className="py-3 first:pt-0">
-            <div className="flex items-center justify-between gap-2"><p className="flex items-center gap-1.5 text-sm font-semibold text-foreground"><AudioLines className="h-4 w-4 text-primary" />{m.title}</p><span className="text-xs text-muted-foreground">0:{String(m.secs).padStart(2, "0")}</span></div>
-            <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{m.transcript}</p>
-            <p className="mt-1 text-xs text-muted-foreground">{m.at}</p>
-          </li>
-        ))}
-      </ul>
-    </aside>
+        <ul className="mt-4 divide-y divide-slate-200">
+          {memos.map((m, i) => (
+            <li key={i} className="py-3 first:pt-0">
+              <div className="flex items-center justify-between gap-2">
+                <p className="flex items-center gap-1.5 text-sm font-semibold text-foreground">
+                  <AudioLines className="h-4 w-4 text-primary" />
+                  {m.title}
+                </p>
+                <span className="text-xs text-muted-foreground font-mono">
+                  0:{String(m.secs).padStart(2, "0")}
+                </span>
+              </div>
+              <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{m.transcript}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{m.at}</p>
+            </li>
+          ))}
+        </ul>
+      </aside>
     </div>
   );
 }
