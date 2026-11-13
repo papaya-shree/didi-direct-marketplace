@@ -1,46 +1,108 @@
 # Didi Direct Marketplace
 
-Act as a Principal Full-Stack Engineer. Build a responsive Next.js/React (Tailwind CSS, Lucide icons) MVP SPA for "Didi Direct"—a cross-border commerce app connecting Indian women artisans to global buyers via Voice AI and PayPal. Include a top role-switcher tab across 4 views: `[Artisan Voice] | [Leader Review] | [Buyer Storefront] | [Federation Ledger]`.
+**Didi Direct** is a cross-border, fair-wage commerce platform connecting rural Indian women artisan collectives directly to international buyers through voice-first listings, transparent deterministic pricing, PayPal checkout, and instant UPI federation settlements.
 
-### 1. Design System
+Built with **React 19**, **Vite**, **TanStack Router**, **Tailwind CSS v4**, and **Bun**, the platform supports **57 languages** with full RTL layout capabilities, on-demand locale chunking, and speech-to-text integration.
 
-- Palette: Primary `#0F172A` (Navy), Accent `#C2410C` (Terracotta), Background `#F8FAFC` (Off-White), Card `#FFFFFF` (White), Success `#059669` (Emerald), Text `#1E293B` (Dark Slate).
+---
 
-- Style: Ultra-minimalist, high contrast, clean `border-slate-200` lines, zero shadow clutter.
+## Key Features & Core Views
 
-### 2. Core Views
+### 1. Artisan Voice (`[Artisan Voice]`)
+- **Voice-First Listings ("Bolo")**: Tailored for low-literacy artisans. Uses the browser Web Speech API mapped to regional BCP-47 speech recognition codes (e.g., `hi-IN`, `ta-IN`, `bn-IN`, `mr-IN`).
+- **Graceful Fallback**: For languages without Web Speech API browser engines, clearly alerts the artisan and presents a lightweight text description fallback.
+- **Client-Side Image Optimization**: Automatically downsizes uploaded craft photos to lightweight formats using HTML Canvas before upload.
+- **Recent Voice Memos**: Displays local voice recording history with timestamps and durations.
 
-- View A (Artisan Voice Entry): Mobile bottom-sheet with photo upload and Hindi voice record button ("Bolo"). Simulates STT/Vision processing to output a draft listing.
+### 2. Leader Review (`[Leader Review]`)
+- **Collective Approval Queue**: Designated collective leaders review artisan drafts, fine-tune descriptions, and verify material costs and labor hours.
+- **Deterministic Pricing**: Enforces fair wages mathematically without hidden markups:
+  $$\text{USD Price} = \frac{\text{Materials (INR)} + (\text{Hours} \times \text{Wage Floor INR})}{1 - \text{Margin}} \times \text{FX}$$
+- **Pricing Modal**: Real-time formula recalculation with strict margin boundaries ($0 \le \text{margin} < 1$).
 
-- View B (Leader Review): Approval queue with a deterministic pricing card ($USD = \frac{\text{Materials} + (\text{Hours} \times \text{Wage Floor})}{1 - \text{Margin}} \times \text{FX}$) and buttons to Approve/Publish, Edit, or Reject.
+### 3. Buyer Storefront (`[Buyer Storefront]`)
+- **Global Catalog**: Displays live handcrafted goods categorized by craft (Handloom, Terracotta, Kantha, Embroidery, etc.) and attributed to specific makers and collectives.
+- **PayPal Checkout & Invoicing**: Express checkout order creation and custom bulk invoicing requests.
+- **Multilingual AI Assistant**: An interactive chatbot answering buyer inquiries on shipping, natural dye care, and craft heritage in the active language, while strictly preserving fixed pricing formulas.
 
-- View C (Buyer Storefront & Chat): English product grid with PayPal Express Checkout button, a "Request Custom Invoice" modal (PayPal Invoicing API mock), and an AI Assistant widget that answers product questions without altering prices.
+### 4. Federation Ledger (`[Federation Ledger]`)
+- **Transparent Cross-Border Flow**: Tracks international PayPal USD receipts $\rightarrow$ SBI Federation account conversion $\rightarrow$ instant UPI disbursements to artisans.
+- **Simulate Instant UPI Settlement**: Simulates automated micro-batch UPI payouts and records cryptographically mocked transaction hashes.
 
-- View D (Federation Ledger): USD-to-INR bank withdrawal overview, settlement table (Item, USD Received, INR Withdrawn, Maker, Share, Status), and a "Simulate Instant UPI Settlement" button that logs mock transaction hashes.
+---
 
-### 3. API Route Mocks & Data Models
+## Comprehensive Internationalization (i18n)
 
-- Implement mock APIs: `/api/voice-listing`, `/api/paypal/create-order`, `/api/paypal/create-invoice`, `/api/ledger/settle`.
+The site is localized using `i18next`, `react-i18next`, and `i18next-browser-languagedetector` with **57 locales** categorized into three strategic tiers:
 
-- Pre-load mock data: 3 Women Collectives, 4 Products across states (`Pending_Review`, `Live`, `Sold`), and 2 historical USD $\rightarrow$ INR $\rightarrow$ UPI payout records.
+- **Tier 1 (24 Indian Languages)**: Hindi, Bengali, Telugu, Marathi, Tamil, Urdu, Gujarati, Kannada, Odia, Malayalam, Punjabi, Assamese, Maithili, Nepali, Sindhi, Konkani, Dogri, Manipuri (Meitei), Sanskrit, Santali, Kashmiri, Bodo, Bhojpuri, and Mizo.
+- **Tier 2 (17 Global Buyer Languages)**: English (Source of Truth), Spanish, French, German, Portuguese, Italian, Dutch, Arabic, Japanese, Korean, Chinese (Simplified), Chinese (Traditional), Russian, Turkish, Indonesian, Thai, and Vietnamese.
+- **Tier 3 (16 Long-Tail & Testing Languages)**: Polish, Swedish, Greek, Czech, Romanian, Hungarian, Hebrew, Persian, Swahili, Finnish, Danish, Norwegian, Ukrainian, Malay, Filipino (Tagalog), and `en-XA` (Pseudo-locale).
 
-This project was built with [Lovable](https://lovable.dev).
+Detailed language metadata, script directions, and review statuses are documented in [LOCALES.md](file:///Users/amishkasrivastava/Desktop/didi_marketplace/LOCALES.md).
 
-## Build with Lovable
+### Architecture Highlights:
+- **Zero Bundle Bloat**: All 57 locale files are dynamically loaded on-demand via Vite's dynamic imports. Each language chunk is only **~5.5 kB** (2.7 kB gzipped).
+- **RTL Support**: Automatic `dir="rtl"` switching for Arabic, Urdu, Sindhi, Kashmiri, Persian, and Hebrew with Tailwind logical properties (`start-`, `end-`, `ms-`, `me-`, `ps-`, `pe-`).
+- **No Tofu Fonts**: Google Noto Sans fonts loaded with `unicode-range` for Devanagari, Bengali, Tamil, Telugu, Gujarati, Gurmukhi, Kannada, Malayalam, Oriya, Arabic, and CJK.
+- **Protected Glossary**: Currency (`USD`, `INR`), payment rails (`PayPal`, `UPI`), brands (`Didi Direct`), and maker names are protected against mistranslation.
+- **Incremental Translation Script**: `scripts/translate.ts` uses SHA-256 hashing to translate only new or updated keys via Gemini API or Google Cloud Translation.
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/bff5b32a-562a-42b7-90e9-42a32436e982).
+---
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+## Getting Started
 
-## Development
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v20+ recommended) or [Bun](https://bun.sh/) (v1.1+)
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+### Installation
+```bash
+git clone https://github.com/papaya-shree/didi-direct-marketplace.git
+cd didi-direct-marketplace
+bun install
+# or: npm install
 ```
+
+### Development
+```bash
+bun dev
+# or: npm run dev
+```
+
+### Testing
+Run the automated test suite (including the 123 i18n quality gate tests):
+```bash
+bun test
+# or: npm test
+```
+
+### Production Build
+```bash
+bun run build
+# or: npm run build
+```
+
+---
+
+## Translation Pipeline
+
+To generate or update translations incrementally:
+1. Configure your API key in `.env` (see `.env.example`):
+   ```bash
+   cp .env.example .env
+   # Set GEMINI_API_KEY=your_key
+   ```
+2. Run the translation script:
+   ```bash
+   bun scripts/translate.ts
+   ```
+3. Audit JSX files for hardcoded string literals:
+   ```bash
+   bun scripts/check-hardcoded-strings.ts
+   ```
+
+---
+
+## License
+
+MIT
