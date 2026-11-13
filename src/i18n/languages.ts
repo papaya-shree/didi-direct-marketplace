@@ -89,3 +89,4 @@ export const LANGUAGE_MAP = new Map<string, LanguageInfo>(
 export function getLanguage(code: string): LanguageInfo {
   return LANGUAGE_MAP.get(code) || LANGUAGE_MAP.get(code.split("-")[0]) || LANGUAGES[0];
 }
+

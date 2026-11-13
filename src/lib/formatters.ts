@@ -41,3 +41,4 @@ export function formatTime(date: Date | string, locale: string): string {
     return String(date);
   }
 }
+

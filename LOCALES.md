@@ -113,3 +113,4 @@ Additional Google Cloud Translation supported languages and testing pseudo-local
    bun test
    ```
 4. **Update `LOCALES.md`** to document the addition, script direction, tier, and review status.
+
